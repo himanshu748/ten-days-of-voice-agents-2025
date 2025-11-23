@@ -20,20 +20,20 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'LiveKit',
-  pageTitle: 'LiveKit Voice Agent',
-  pageDescription: 'A voice agent built with LiveKit',
+  companyName: 'Starbucks',
+  pageTitle: 'Starbucks Barista',
+  pageDescription: 'Your personal AI Barista',
 
   supportsChatInput: true,
   supportsVideoInput: true,
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: '/lk-logo.svg',
-  accent: '#002cf2',
+  logo: '/lk-logo.svg', // Keeping default logo for now as I don't have a Starbucks asset
+  accent: '#00704A', // Starbucks Green
   logoDark: '/lk-logo-dark.svg',
-  accentDark: '#1fd5f9',
-  startButtonText: 'Start call',
+  accentDark: '#00704A', // Starbucks Green
+  startButtonText: 'Start Order',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,

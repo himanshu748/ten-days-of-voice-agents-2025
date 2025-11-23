@@ -1,20 +1,51 @@
 import { Button } from '@/components/livekit/button';
 
-function WelcomeImage() {
+function CoffeeCup() {
   return (
-    <svg
-      width="64"
-      height="64"
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="text-fg0 mb-4 size-16"
-    >
-      <path
-        d="M15 24V40C15 40.7957 14.6839 41.5587 14.1213 42.1213C13.5587 42.6839 12.7956 43 12 43C11.2044 43 10.4413 42.6839 9.87868 42.1213C9.31607 41.5587 9 40.7957 9 40V24C9 23.2044 9.31607 22.4413 9.87868 21.8787C10.4413 21.3161 11.2044 21 12 21C12.7956 21 13.5587 21.3161 14.1213 21.8787C14.6839 22.4413 15 23.2044 15 24ZM22 5C21.2044 5 20.4413 5.31607 19.8787 5.87868C19.3161 6.44129 19 7.20435 19 8V56C19 56.7957 19.3161 57.5587 19.8787 58.1213C20.4413 58.6839 21.2044 59 22 59C22.7956 59 23.5587 58.6839 24.1213 58.1213C24.6839 57.5587 25 56.7957 25 56V8C25 7.20435 24.6839 6.44129 24.1213 5.87868C23.5587 5.31607 22.7956 5 22 5ZM32 13C31.2044 13 30.4413 13.3161 29.8787 13.8787C29.3161 14.4413 29 15.2044 29 16V48C29 48.7957 29.3161 49.5587 29.8787 50.1213C30.4413 50.6839 31.2044 51 32 51C32.7956 51 33.5587 50.6839 34.1213 50.1213C34.6839 49.5587 35 48.7957 35 48V16C35 15.2044 34.6839 14.4413 34.1213 13.8787C33.5587 13.3161 32.7956 13 32 13ZM42 21C41.2043 21 40.4413 21.3161 39.8787 21.8787C39.3161 22.4413 39 23.2044 39 24V40C39 40.7957 39.3161 41.5587 39.8787 42.1213C40.4413 42.6839 41.2043 43 42 43C42.7957 43 43.5587 42.6839 44.1213 42.1213C44.6839 41.5587 45 40.7957 45 40V24C45 23.2044 44.6839 22.4413 44.1213 21.8787C43.5587 21.3161 42.7957 21 42 21ZM52 17C51.2043 17 50.4413 17.3161 49.8787 17.8787C49.3161 18.4413 49 19.2044 49 20V44C49 44.7957 49.3161 45.5587 49.8787 46.1213C50.4413 46.6839 51.2043 47 52 47C52.7957 47 53.5587 46.6839 54.1213 46.1213C54.6839 45.5587 55 44.7957 55 44V20C55 19.2044 54.6839 18.4413 54.1213 17.8787C53.5587 17.3161 52.7957 17 52 17Z"
-        fill="currentColor"
-      />
-    </svg>
+    <div className="relative animate-float">
+      {/* Steam Animation */}
+      <div className="absolute -top-8 left-1/2 -translate-x-1/2 space-x-2 flex">
+        <div className="w-2 h-6 bg-white/40 rounded-full blur-sm animate-steam" style={{ animationDelay: '0s' }}></div>
+        <div className="w-2 h-8 bg-white/40 rounded-full blur-sm animate-steam" style={{ animationDelay: '0.5s' }}></div>
+        <div className="w-2 h-6 bg-white/40 rounded-full blur-sm animate-steam" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      {/* Cup */}
+      <svg
+        width="120"
+        height="120"
+        viewBox="0 0 120 120"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="drop-shadow-xl"
+      >
+        {/* Cup Body */}
+        <path
+          d="M25 30H95L85 100C85 105.523 80.5228 110 75 110H45C39.4772 110 35 105.523 35 100L25 30Z"
+          fill="white"
+          stroke="#00704A"
+          strokeWidth="2"
+        />
+        {/* Lid */}
+        <path
+          d="M20 30H100V25C100 22.2386 97.7614 20 95 20H25C22.2386 20 20 22.2386 20 25V30Z"
+          fill="white"
+          stroke="#00704A"
+          strokeWidth="2"
+        />
+        {/* Sleeve */}
+        <path
+          d="M28 50H92L89 80H31L28 50Z"
+          fill="#C69C6D" // Cardboard color
+        />
+        {/* Logo Placeholder */}
+        <circle cx="60" cy="65" r="12" fill="#00704A" />
+        <path
+          d="M60 58L62 62H66L63 64L64 68L60 66L56 68L57 64L54 62H58L60 58Z"
+          fill="white"
+        />
+      </svg>
+    </div>
   );
 }
 
@@ -29,31 +60,36 @@ export const WelcomeView = ({
   ref,
 }: React.ComponentProps<'div'> & WelcomeViewProps) => {
   return (
-    <div ref={ref}>
-      <section className="bg-background flex flex-col items-center justify-center text-center">
-        <WelcomeImage />
+    <div ref={ref} className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary to-transparent" />
 
-        <p className="text-foreground max-w-prose pt-1 leading-6 font-medium">
-          Chat live with your voice AI agent
+      <section className="relative z-10 flex flex-col items-center justify-center text-center p-8 rounded-3xl bg-card/50 backdrop-blur-sm border border-border shadow-2xl max-w-md w-full mx-4 transition-all hover:shadow-primary/20">
+        <div className="mb-8">
+          <CoffeeCup />
+        </div>
+
+        <h1 className="text-3xl font-bold text-primary mb-2 tracking-tight">
+          Starbucks Barista
+        </h1>
+
+        <p className="text-foreground/80 max-w-xs mx-auto mb-8 leading-relaxed">
+          Your personal AI coffee companion. Ready to take your order?
         </p>
 
-        <Button variant="primary" size="lg" onClick={onStartCall} className="mt-6 w-64 font-mono">
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={onStartCall}
+          className="w-full rounded-full font-bold tracking-wide shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-primary text-white hover:bg-primary/90"
+        >
           {startButtonText}
         </Button>
       </section>
 
       <div className="fixed bottom-5 left-0 flex w-full items-center justify-center">
-        <p className="text-muted-foreground max-w-prose pt-1 text-xs leading-5 font-normal text-pretty md:text-sm">
-          Need help getting set up? Check out the{' '}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://docs.livekit.io/agents/start/voice-ai/"
-            className="underline"
-          >
-            Voice AI quickstart
-          </a>
-          .
+        <p className="text-muted-foreground text-xs font-medium">
+          Powered by LiveKit & Murf AI
         </p>
       </div>
     </div>

@@ -6,6 +6,7 @@ import type { AppConfig } from '@/app-config';
 import { ChatTranscript } from '@/components/app/chat-transcript';
 import { PreConnectMessage } from '@/components/app/preconnect-message';
 import { TileLayout } from '@/components/app/tile-layout';
+
 import {
   AgentControlBar,
   type ControlBarControls,
@@ -37,7 +38,7 @@ const BOTTOM_VIEW_MOTION_PROPS = {
     duration: 0.3,
     delay: 0.5,
     ease: 'easeOut',
-  },
+  } as any,
 };
 
 interface FadeProps {
@@ -62,6 +63,12 @@ interface SessionViewProps {
   appConfig: AppConfig;
 }
 
+import { useRoomContext } from '@livekit/components-react';
+import { RoomEvent, DataPacket_Kind, RemoteParticipant } from 'livekit-client';
+import { ImageViewer } from '@/components/app/image-viewer';
+
+// ... (existing imports)
+
 export const SessionView = ({
   appConfig,
   ...props
@@ -69,9 +76,11 @@ export const SessionView = ({
   useConnectionTimeout(200_000);
   useDebugMode({ enabled: IN_DEVELOPMENT });
 
+  const room = useRoomContext();
   const messages = useChatMessages();
   const [chatOpen, setChatOpen] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [generatedImage, setGeneratedImage] = useState<{ url: string, prompt: string } | null>(null);
 
   const controls: ControlBarControls = {
     leave: true,
@@ -90,8 +99,52 @@ export const SessionView = ({
     }
   }, [messages]);
 
+  useEffect(() => {
+    const onDataReceived = (payload: Uint8Array, participant?: RemoteParticipant, kind?: DataPacket_Kind, topic?: string) => {
+      if (topic === "agent_events") {
+        try {
+          const parsedPayload = JSON.parse(new TextDecoder().decode(payload));
+          console.log("Received agent event:", parsedPayload); // Debug log
+          if (parsedPayload.type === "image") {
+            setGeneratedImage(parsedPayload.data);
+          } else if (parsedPayload.type === "order_saved") {
+            console.log("Order saved event received, dispatching to window"); // Debug log
+            // Dispatch a custom event that OrderReceipt can listen to
+            const event = new CustomEvent("order_saved", { detail: parsedPayload.data });
+            window.dispatchEvent(event);
+          }
+        } catch (e) {
+          console.error("Failed to parse agent event:", e);
+        }
+      }
+    };
+
+    room.on(RoomEvent.DataReceived, onDataReceived);
+    return () => {
+      room.off(RoomEvent.DataReceived, onDataReceived);
+    };
+  }, [room]);
+
   return (
     <section className="bg-background relative z-10 h-full w-full overflow-hidden" {...props}>
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary to-transparent" />
+
+      {/* Branding Header */}
+      <div className="absolute top-4 left-4 z-50 flex items-center gap-2">
+        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xs">
+          SB
+        </div>
+        <span className="text-primary font-bold tracking-widest text-sm">STARBUCKS</span>
+      </div>
+
+      {/* Image Viewer Overlay */}
+      <ImageViewer
+        imageUrl={generatedImage?.url ?? null}
+        prompt={generatedImage?.prompt ?? null}
+        onClose={() => setGeneratedImage(null)}
+      />
+
       {/* Chat Transcript */}
       <div
         className={cn(
@@ -120,9 +173,14 @@ export const SessionView = ({
         {appConfig.isPreConnectBufferEnabled && (
           <PreConnectMessage messages={messages} className="pb-4" />
         )}
-        <div className="bg-background relative mx-auto max-w-2xl pb-3 md:pb-12">
+        <div className="bg-background/80 backdrop-blur-md relative mx-auto max-w-2xl pb-3 md:pb-12 rounded-t-2xl border-t border-primary/10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
           <Fade bottom className="absolute inset-x-0 top-0 h-4 -translate-y-full" />
           <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
+          <div className="absolute bottom-2 left-0 right-0 text-center">
+            <p className="text-[10px] text-muted-foreground/60 font-medium tracking-widest uppercase">
+              © 2025 Starbucks Coffee Company. All rights reserved.
+            </p>
+          </div>
         </div>
       </MotionBottom>
     </section>
