@@ -21,6 +21,20 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
 
       <div className="relative z-10 flex flex-col items-center max-w-4xl px-6 text-center">
 
+        {/* Professional Brand Logo */}
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
+          <img
+            src="/tata1mg-brand.png"
+            alt="Tata 1mg"
+            className="h-16 md:h-20 object-contain drop-shadow-lg"
+          />
+        </motion.div>
+
         {/* 2. Enhanced Sticker with Better Hover Effects */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
