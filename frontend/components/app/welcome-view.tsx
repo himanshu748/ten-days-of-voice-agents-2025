@@ -44,6 +44,14 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
             A supportive voice companion for daily check-ins about your mood, energy, and goals.
           </p>
+
+          {/* Status Badge */}
+          <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-green-600 dark:text-green-400">
+              ✓ All Systems Running
+            </span>
+          </div>
         </motion.div>
 
         {/* Feature Pills */}
