@@ -6,44 +6,52 @@
 :root {
   --radius: 0.75rem;
 
-  /* Starbucks Palette */
-  --starbucks-green: oklch(0.42 0.15 160);
-  --starbucks-warm-white: oklch(0.99 0.01 100);
-  --starbucks-coffee: oklch(0.15 0.02 100);
-  --starbucks-cream: oklch(0.95 0.02 100);
+  /* Eka.care Palette */
+  --eka-primary: #5042BD;
+  /* Blue Violet */
+  --eka-secondary: #BBCEFF;
+  /* Periwinkle */
+  --eka-text: #1d0150;
+  /* Tolopea */
+  --eka-bg: #F8FAFF;
+  /* Very light blue tint */
 
-  --background: var(--starbucks-warm-white);
-  --foreground: var(--starbucks-coffee);
+  --background: 0 0% 100%;
+  --foreground: 263 98% 21%;
+  /* Converted #1d0150 to HSL approx */
 
-  --card: oklch(1 0 0);
-  --card-foreground: var(--starbucks-coffee);
+  --card: 0 0% 100%;
+  --card-foreground: 263 98% 21%;
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: var(--starbucks-coffee);
+  --popover: 0 0% 100%;
+  --popover-foreground: 263 98% 21%;
 
-  --primary: var(--starbucks-green);
-  --primary-foreground: oklch(1 0 0);
+  --primary: 247 48% 50%;
+  /* Converted #5042BD to HSL approx */
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: var(--starbucks-cream);
-  --secondary-foreground: var(--starbucks-green);
+  --secondary: 223 100% 87%;
+  /* Converted #BBCEFF to HSL approx */
+  --secondary-foreground: 263 98% 21%;
 
-  --muted: var(--starbucks-cream);
-  --muted-foreground: oklch(0.55 0.02 100);
+  --muted: 223 100% 96%;
+  --muted-foreground: 263 40% 40%;
 
-  --accent: var(--starbucks-cream);
-  --accent-foreground: var(--starbucks-green);
+  --accent: 247 48% 50%;
+  --accent-foreground: 0 0% 100%;
 
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
 
-  --border: oklch(0.92 0.01 100);
-  --input: oklch(0.92 0.01 100);
-  --ring: var(--starbucks-green);
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 247 48% 50%;
 
-  --chart-1: var(--starbucks-green);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --chart-1: 247 48% 50%;
+  --chart-2: 263 98% 21%;
+  --chart-3: 223 100% 87%;
+  --chart-4: 220 13% 91%;
+  --chart-5: oklch(0.70 0.10 60);
 
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);

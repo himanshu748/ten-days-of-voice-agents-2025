@@ -25,7 +25,7 @@ const VIEW_MOTION_PROPS = {
   transition: {
     duration: 0.5,
     ease: 'linear',
-  },
+  } as any,
 };
 
 export function ViewController() {
@@ -50,8 +50,7 @@ export function ViewController() {
         <MotionWelcomeView
           key="welcome"
           {...VIEW_MOTION_PROPS}
-          startButtonText={appConfig.startButtonText}
-          onStartCall={startSession}
+          onStart={startSession}
         />
       )}
       {/* Session view */}

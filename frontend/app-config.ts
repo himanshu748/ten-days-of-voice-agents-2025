@@ -20,20 +20,20 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Starbucks',
-  pageTitle: 'Starbucks Barista',
-  pageDescription: 'Your personal AI Barista',
+  companyName: 'eka.care',
+  pageTitle: 'eka.care - Health Companion',
+  pageDescription: 'Your personal health assistant powered by AI.',
 
   supportsChatInput: true,
   supportsVideoInput: true,
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: '/lk-logo.svg', // Keeping default logo for now as I don't have a Starbucks asset
-  accent: '#00704A', // Starbucks Green
+  logo: '/lk-logo.svg',
+  accent: '#5042BD', // Blue Violet
   logoDark: '/lk-logo-dark.svg',
-  accentDark: '#00704A', // Starbucks Green
-  startButtonText: 'Start Order',
+  accentDark: '#5042BD', // Blue Violet
+  startButtonText: 'Start Check-in',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,

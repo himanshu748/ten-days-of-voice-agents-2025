@@ -127,15 +127,19 @@ export const SessionView = ({
 
   return (
     <section className="bg-background relative z-10 h-full w-full overflow-hidden" {...props}>
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary to-transparent" />
+      {/* Subtle Background Pattern */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `radial-gradient(circle, #5042BD 1px, transparent 1px)`,
+          backgroundSize: '30px 30px',
+        }}
+      />
 
       {/* Branding Header */}
-      <div className="absolute top-4 left-4 z-50 flex items-center gap-2">
-        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xs">
-          SB
+      <div className="absolute top-4 left-4 z-50 flex items-center gap-3 px-4 py-2 rounded-xl bg-white/90 border border-border backdrop-blur-sm shadow-sm">
+        <div className="text-2xl font-bold text-primary">
+          eka.care
         </div>
-        <span className="text-primary font-bold tracking-widest text-sm">STARBUCKS</span>
       </div>
 
       {/* Image Viewer Overlay */}
@@ -177,8 +181,8 @@ export const SessionView = ({
           <Fade bottom className="absolute inset-x-0 top-0 h-4 -translate-y-full" />
           <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
           <div className="absolute bottom-2 left-0 right-0 text-center">
-            <p className="text-[10px] text-muted-foreground/60 font-medium tracking-widest uppercase">
-              © 2025 Starbucks Coffee Company. All rights reserved.
+            <p className="text-[9px] text-muted-foreground/60 font-medium tracking-wider uppercase">
+              © 2025 · EKA CARE
             </p>
           </div>
         </div>
