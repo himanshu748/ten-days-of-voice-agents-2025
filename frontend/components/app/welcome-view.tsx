@@ -25,7 +25,7 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           className="mb-10 relative group"
         >
           <div className="w-32 h-32 relative z-10 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
-            <img src="/pharmeasy-sticker.svg" alt="Pharmeasy Sticker" className="w-full h-full drop-shadow-2xl" />
+            <img src="/tata1mg-sticker.svg" alt="Tata 1mg Sticker" className="w-full h-full drop-shadow-2xl" />
           </div>
           {/* Glow Effect */}
           <div className="absolute inset-0 bg-primary/30 rounded-full blur-2xl animate-pulse opacity-50" />
@@ -90,7 +90,7 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
         transition={{ delay: 1, duration: 1 }}
         className="absolute bottom-6 text-xs text-muted-foreground/60 font-medium tracking-wide"
       >
-        © 2025 PHARMEASY · SECURE & PRIVATE
+        © 2025 TATA 1MG · SECURE & PRIVATE
       </motion.div>
     </div>
   );

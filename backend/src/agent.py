@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 from typing import Annotated, List
+from mcp_integration import mcp_client
 from livekit.agents import (
     Agent,
     AgentSession,
@@ -35,24 +36,36 @@ class Assistant(Agent):
         history_context = self._get_history_context()
         
         super().__init__(
-            instructions=f"""You are a supportive, grounded Pharmeasy Health Assistant.
+            instructions=f"""You are a friendly, supportive Tata 1mg Health Assistant - think of yourself as a caring friend who checks in daily.
+            
+            **YOUR VIBE:**
+            - Casual and warm (use "Hey!", "How's it going?", "That's awesome!")
+            - Genuinely curious about the user's day
+            - Supportive but realistic (no toxic positivity)
+            - Keep it brief and conversational (aim for 2-3 minute check-ins)
             
             **YOUR GOAL:**
-            Conduct a short daily check-in with the user about their mood and goals. Be warm, empathetic, but realistic.
+            Quick daily wellness check-in covering:
+            1. **Mood/Energy**: "Hey! How are you feeling today?" or "What's your energy like?"
+            2. **Goals**: "What's on your plate today?" or "Any goals you're tackling?"
+            3. **Follow-up**: Ask WHY a goal matters or offer to break big goals into smaller steps
+            4. **Quick Recap**: Summarize mood + 1-3 goals, confirm with user
+            5. **Save**: Use save_checkin tool after confirmation
+            
+            **TOOLS YOU HAVE:**
+            1. save_checkin - After confirming with the user, save their mood + goals to the wellness log.
+            2. save_to_notion - Save the check-in to Notion (use when user asks to save to Notion).
+            3. create_tasks_in_todoist - Convert goals into Todoist tasks (use when user wants tasks created).
+            4. get_weekly_reflection - Analyze past week's data for trends (use when user asks "how has my week been?")
+            
+            **MCP INTEGRATION (ADVANCED):**
+            If the user asks to "save this to Notion" or "create tasks" or "add to Todoist", you can use the MCP tools above.
+            - Always confirm what you're going to do before calling these tools.
+            - If credentials aren't configured, tell the user they need to set up API tokens.
             
             **CONTEXT FROM PREVIOUS SESSIONS:**
             {history_context}
             
-            **INTERACTION FLOW:**
-            1.  **Greet & Check-in**: Ask how they are feeling today and what their energy is like. Reference past context if relevant (e.g., "Last time we talked, you mentioned being low on energy. How does today compare?").
-            2.  **Intentions**: Ask for 1-3 simple, practical goals for the day.
-            3.  **Support**: Offer *brief*, grounded advice (e.g., "Take a 5-minute break," "Drink water"). DO NOT give medical advice.
-            4.  **Recap & Save**: Summarize what they said (mood + goals). Then, explicitly ask: "Does this sound right?"
-            5.  **Persist**: Once the user confirms with "yes" or similar, call the `save_checkin` tool to save the entry.
-            6.  **Goodbye**: Wish them well and end the conversation.
-            
-            **GUIDELINES:**
-            -   Keep it short and conversational.
             -   Avoid toxic positivity; be real.
             -   If the user reports serious distress, suggest professional help gently, but do not diagnose.
             """,
@@ -133,6 +146,131 @@ class Assistant(Agent):
         except Exception as e:
             logger.error(f"Failed to save check-in: {e}")
             return f"I had a little trouble writing to my journal, but I've noted it down. (Error: {e})"
+    
+    @function_tool
+    async def save_to_notion(
+        self,
+        ctx: RunContext,
+        mood: str,
+        goals: List[str],
+        summary: str,
+    ):
+        """Save the wellness check-in to Notion database.
+        
+        Use this tool when the user explicitly asks to save to Notion or wants to track their wellness in Notion.
+        
+        Args:
+            mood: The user's mood
+            goals: List of goals mentioned
+            summary: Summary of the session
+        """
+        logger.info("Attempting to save to Notion...")
+        
+        date = datetime.now().strftime("%Y-%m-%d")
+        result = await mcp_client.create_notion_wellness_entry(
+            date=date,
+            mood=mood,
+            goals=goals,
+            summary=summary
+        )
+        
+        if result["status"] == "success":
+            return f"I've saved your wellness check-in to Notion! {result['message']}"
+        else:
+            return f"I couldn't save to Notion right now: {result['message']}"
+    
+    @function_tool
+    async def create_tasks_in_todoist(
+        self,
+        ctx: RunContext,
+        goals: List[str],
+    ):
+        """Convert user's wellness goals into Todoist tasks.
+        
+        Use this when the user wants to turn their goals into actionable tasks in Todoist.
+        
+        Args:
+            goals: List of goals to convert to tasks
+        """
+        logger.info(f"Creating {len(goals)} tasks in Todoist...")
+        
+        result = await mcp_client.create_todoist_tasks(goals=goals)
+        
+        if result["status"] == "success":
+            tasks_str = ", ".join(f"'{g}'" for g in goals)
+            return f"I've created {len(goals)} tasks in your Todoist: {tasks_str}. {result['message']}"
+        else:
+            return f"I couldn't create tasks in Todoist: {result['message']}"
+    
+    @function_tool
+    async def get_weekly_reflection(
+        self,
+        ctx: RunContext,
+    ):
+        """Analyze the past week's wellness data and provide insights.
+        
+        Use this when the user asks "how has my week been?" or wants to see trends.
+        """
+        logger.info("Generating weekly reflection...")
+        
+        try:
+            log_path = Path(__file__).resolve().parent.parent.parent / "wellness_log.json"
+            
+            if not log_path.exists():
+                return "You haven't had any check-ins yet this week. Let's start tracking!"
+            
+            with open(log_path, "r") as f:
+                data = json.load(f)
+            
+            if not data:
+                return "No check-ins found yet. Let's start your wellness journey!"
+            
+            # Get entries from last 7 days
+            from datetime import datetime, timedelta
+            week_ago = datetime.now() - timedelta(days=7)
+            
+            recent_entries = []
+            for entry in data:
+                try:
+                    entry_date = datetime.strptime(entry.get('date', ''), "%Y-%m-%d %H:%M:%S")
+                    if entry_date >= week_ago:
+                        recent_entries.append(entry)
+                except:
+                    continue
+            
+            if not recent_entries:
+                return f"I found {len(data)} total check-ins, but none in the past week. Want to do one now?"
+            
+            # Analyze trends
+            moods = [e.get('mood', '') for e in recent_entries]
+            total_goals = sum(len(e.get('goals', [])) for e in recent_entries)
+            
+            reflection = f"""Here's your week at a glance:
+            
+📊 **This Week**: {len(recent_entries)} check-ins
+🎯 **Goals Set**: {total_goals} total goals
+📝 **Recent Moods**: {', '.join(moods[-3:])}
+
+💭 **Insight**: """
+            
+            # Simple insights
+            if len(recent_entries) >= 5:
+                reflection += "You've been really consistent with check-ins - that's awesome! "
+            elif len(recent_entries) >= 3:
+                reflection += "Good momentum this week! "
+            else:
+                reflection += "You're getting started - keep it up! "
+            
+            if total_goals > len(recent_entries) * 2:
+                reflection += "You're setting ambitious goals. Remember to celebrate small wins too!"
+            else:
+                reflection += "Your goal-setting seems balanced and achievable."
+            
+            return reflection
+            
+        except Exception as e:
+            logger.error(f"Error generating reflection: {e}")
+            return "I had trouble analyzing your week, but I'm here if you want to chat about it!"
 
 
 def prewarm(proc: JobProcess):

@@ -20,8 +20,8 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Pharmeasy',
-  pageTitle: 'Daily Wellness Companion',
+  companyName: 'Tata 1mg',
+  pageTitle: 'Tata 1mg - Daily Wellness Companion',
   pageDescription: 'A supportive voice companion for daily check-ins about your mood, energy, and goals.',
 
   supportsChatInput: true,
@@ -29,11 +29,11 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: '/pharmeasy-logo.svg',
-  accent: '#10847e', // Pharmeasy Teal
-  logoDark: '/pharmeasy-logo.svg',
-  accentDark: '#10847e', // Pharmeasy Teal
-  startButtonText: 'Start Health Check-in',
+  logo: '/tata1mg-logo.svg',
+  accent: '#FE6F61', // Tata 1mg Orange-Red
+  logoDark: '/tata1mg-logo.svg',
+  accentDark: '#FE6F61', // Tata 1mg Orange-Red
+  startButtonText: 'Start Your Daily Check-in',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,

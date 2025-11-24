@@ -6,11 +6,11 @@
 :root {
   --radius: 0.75rem;
 
-  /* Pharmeasy Palette */
-  --pharmeasy-teal: #10847e;
-  --pharmeasy-teal-dark: #0a5c58;
-  --pharmeasy-bg: #f4f7fb;
-  --pharmeasy-text: #4f585e;
+  /* Tata 1mg Palette */
+  --tata1mg-primary: #FE6F61;
+  --tata1mg-primary-dark: #E45A4D;
+  --tata1mg-bg: #FFF8F6;
+  --tata1mg-text: #2D2D2D;
 
   --background: 0 0% 100%;
   --foreground: 210 9% 34%;
@@ -22,8 +22,8 @@
   --popover: 0 0% 100%;
   --popover-foreground: 210 9% 34%;
 
-  --primary: 177 78% 29%;
-  /* #10847e */
+  --primary: #FE6F61;
+  /* #FE6F61 - Tata 1mg Orange-Red */
   --primary-foreground: 0 0% 100%;
 
   --secondary: 210 40% 96%;
@@ -41,9 +41,9 @@
 
   --border: 214 32% 91%;
   --input: 214 32% 91%;
-  --ring: 177 78% 29%;
+  --ring: #FE6F61;
 
-  --chart-1: 177 78% 29%;
+  --chart-1: #FE6F61;
   --chart-2: 210 9% 34%;
   --chart-3: 199 89% 48%;
   --chart-4: 43 96% 58%;
@@ -51,12 +51,12 @@
 
   --sidebar: 0 0% 100%;
   --sidebar-foreground: 210 9% 34%;
-  --sidebar-primary: 177 78% 29%;
+  --sidebar-primary: #FE6F61;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 210 40% 96%;
-  --sidebar-accent-foreground: 177 78% 29%;
+  --sidebar-accent-foreground: #FE6F61;
   --sidebar-border: 220 13% 91%;
-  --sidebar-ring: 177 78% 29%;
+  --sidebar-ring: #FE6F61;
 }
 
 .dark {
