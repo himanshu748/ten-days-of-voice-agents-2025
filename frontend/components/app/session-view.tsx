@@ -121,19 +121,31 @@ export const SessionView = ({
 
   return (
     <section className="bg-background relative z-10 h-full w-full overflow-hidden" {...props}>
-      {/* Subtle Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+
+      {/* Enhanced Background with Floating Shapes */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
           backgroundImage: `radial-gradient(circle, #FE6F61 1px, transparent 1px)`,
           backgroundSize: '30px 30px',
         }}
       />
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-[100px] pointer-events-none animate-float opacity-40" />
+      <div className="absolute bottom-[-10%] left-[-5%] w-[350px] h-[350px] bg-gradient-to-tl from-secondary/10 to-transparent rounded-full blur-[90px] pointer-events-none animate-float-delayed opacity-40" />
 
-      {/* Branding Header */}
-      <div className="absolute top-4 left-4 z-50 flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/80 border border-white/50 backdrop-blur-md shadow-sm hover:bg-white/90 transition-colors">
-        <img src="/tata1mg-sticker.svg" alt="Tata 1mg" className="w-8 h-8 drop-shadow-md" />
-        <div className="text-xl font-bold text-primary tracking-tight">
-          Tata 1mg
+      {/* Enhanced Branding Header */}
+      <div className="absolute top-4 left-4 z-50 group">
+        <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/90 border border-white/60 backdrop-blur-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+          <div className="relative">
+            <img
+              src="/tata1mg-sticker.svg"
+              alt="Tata 1mg"
+              className="w-8 h-8 drop-shadow-lg transition-transform duration-300 group-hover:rotate-12"
+            />
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-50 transition-opacity" />
+          </div>
+          <div className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent tracking-tight">
+            Tata 1mg
+          </div>
         </div>
       </div>
 

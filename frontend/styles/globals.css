@@ -157,7 +157,7 @@
 
 @layer utilities {
 
-  /* Custom Animations for UI Enhancements */
+  /* Existing utilities */
   @keyframes float {
 
     0%,
@@ -196,34 +196,31 @@
     }
   }
 
+  @keyframes steam {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 0.6;
+    }
+
+    100% {
+      transform: translateY(-20px) scale(1.2);
+      opacity: 0;
+    }
+  }
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
 
-}
-
-50% {
-  transform: translateY(-20px);
-}
-
-100% {
-  transform: translateY(0px);
-}
-}
-
-.animate-steam {
-  animation: steam 2s ease-out infinite;
-}
-
-@keyframes steam {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.8;
+  .animate-float-delayed {
+    animation: float-delayed 8s ease-in-out infinite;
   }
 
-  100% {
-    transform: translateY(-20px) scale(1.5);
-    opacity: 0;
+  .animate-gradient-x {
+    animation: gradient-x 3s ease infinite;
   }
-}
+
+  .animate-steam {
+    animation: steam 2s ease-out infinite;
+  }
 }
