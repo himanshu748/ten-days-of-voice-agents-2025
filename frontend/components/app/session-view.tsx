@@ -130,15 +130,16 @@ export const SessionView = ({
       {/* Subtle Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
-          backgroundImage: `radial-gradient(circle, #5042BD 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, #10847e 1px, transparent 1px)`,
           backgroundSize: '30px 30px',
         }}
       />
 
       {/* Branding Header */}
-      <div className="absolute top-4 left-4 z-50 flex items-center gap-3 px-4 py-2 rounded-xl bg-white/90 border border-border backdrop-blur-sm shadow-sm">
-        <div className="text-2xl font-bold text-primary">
-          eka.care
+      <div className="absolute top-4 left-4 z-50 flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/80 border border-white/50 backdrop-blur-md shadow-sm hover:bg-white/90 transition-colors">
+        <img src="/pharmeasy-sticker.svg" alt="Pharmeasy" className="w-8 h-8 drop-shadow-md" />
+        <div className="text-xl font-bold text-primary tracking-tight">
+          Pharmeasy
         </div>
       </div>
 
@@ -182,7 +183,7 @@ export const SessionView = ({
           <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
           <div className="absolute bottom-2 left-0 right-0 text-center">
             <p className="text-[9px] text-muted-foreground/60 font-medium tracking-wider uppercase">
-              © 2025 · EKA CARE
+              © 2025 · PHARMEASY
             </p>
           </div>
         </div>

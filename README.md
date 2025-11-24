@@ -1,4 +1,4 @@
-# AI Voice Agents Challenge - Starter Repository
+# Pharmeasy Voice Agent
 
 Welcome to the **AI Voice Agents Challenge** by [murf.ai](https://murf.ai)!
 

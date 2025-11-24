@@ -1,20 +1,11 @@
 [
   {
-    "timestamp": 1763918320,
-    "date": "2025-11-23 22:48:40",
-    "mood": "High energy, with a headache",
+    "timestamp": 1763990578,
+    "date": "2025-11-24 18:52:58",
+    "mood": "good but low energy",
     "goals": [
-      "Coding"
+      "edit five videos"
     ],
-    "summary": "User reported high energy but also a headache. Their goal for the day is coding."
-  },
-  {
-    "timestamp": 1763987544,
-    "date": "2025-11-24 18:02:24",
-    "mood": "Happy, high energy",
-    "goals": [
-      "Coding"
-    ],
-    "summary": "User is happy and has high energy. Their goal for the day is coding."
+    "summary": "User is feeling good but has low energy. Their goal for today is to edit five videos."
   }
 ]

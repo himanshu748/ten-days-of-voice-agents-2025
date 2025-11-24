@@ -20,20 +20,20 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'eka.care',
-  pageTitle: 'eka.care - Health Companion',
-  pageDescription: 'Your personal health assistant powered by AI.',
+  companyName: 'Pharmeasy',
+  pageTitle: 'Daily Wellness Companion',
+  pageDescription: 'A supportive voice companion for daily check-ins about your mood, energy, and goals.',
 
   supportsChatInput: true,
   supportsVideoInput: true,
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: '/lk-logo.svg',
-  accent: '#5042BD', // Blue Violet
-  logoDark: '/lk-logo-dark.svg',
-  accentDark: '#5042BD', // Blue Violet
-  startButtonText: 'Start Check-in',
+  logo: '/pharmeasy-logo.svg',
+  accent: '#10847e', // Pharmeasy Teal
+  logoDark: '/pharmeasy-logo.svg',
+  accentDark: '#10847e', // Pharmeasy Teal
+  startButtonText: 'Start Health Check-in',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,
