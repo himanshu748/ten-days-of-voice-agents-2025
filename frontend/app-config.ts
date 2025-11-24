@@ -22,7 +22,8 @@ export interface AppConfig {
 export const APP_CONFIG_DEFAULTS: AppConfig = {
   companyName: 'Tata 1mg',
   pageTitle: 'Tata 1mg - Daily Wellness Companion',
-  pageDescription: 'A supportive voice companion for daily check-ins about your mood, energy, and goals.',
+  pageDescription:
+    'A supportive voice companion for daily check-ins about your mood, energy, and goals.',
 
   supportsChatInput: true,
   supportsVideoInput: true,

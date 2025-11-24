@@ -7,10 +7,10 @@
   --radius: 0.75rem;
 
   /* Tata 1mg Palette */
-  --tata1mg-primary: #FE6F61;
-  --tata1mg-primary-dark: #E45A4D;
-  --tata1mg-bg: #FFF8F6;
-  --tata1mg-text: #2D2D2D;
+  --tata1mg-primary: #fe6f61;
+  --tata1mg-primary-dark: #e45a4d;
+  --tata1mg-bg: #fff8f6;
+  --tata1mg-text: #2d2d2d;
 
   --background: 0 0% 100%;
   --foreground: 210 9% 34%;
@@ -22,7 +22,7 @@
   --popover: 0 0% 100%;
   --popover-foreground: 210 9% 34%;
 
-  --primary: #FE6F61;
+  --primary: #fe6f61;
   /* #FE6F61 - Tata 1mg Orange-Red */
   --primary-foreground: 0 0% 100%;
 
@@ -41,9 +41,9 @@
 
   --border: 214 32% 91%;
   --input: 214 32% 91%;
-  --ring: #FE6F61;
+  --ring: #fe6f61;
 
-  --chart-1: #FE6F61;
+  --chart-1: #fe6f61;
   --chart-2: 210 9% 34%;
   --chart-3: 199 89% 48%;
   --chart-4: 43 96% 58%;
@@ -51,12 +51,12 @@
 
   --sidebar: 0 0% 100%;
   --sidebar-foreground: 210 9% 34%;
-  --sidebar-primary: #FE6F61;
+  --sidebar-primary: #fe6f61;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 210 40% 96%;
-  --sidebar-accent-foreground: #FE6F61;
+  --sidebar-accent-foreground: #fe6f61;
   --sidebar-border: 220 13% 91%;
-  --sidebar-ring: #FE6F61;
+  --sidebar-ring: #fe6f61;
 }
 
 .dark {
@@ -156,10 +156,8 @@
 }
 
 @layer utilities {
-
   /* Existing utilities */
   @keyframes float {
-
     0%,
     100% {
       transform: translateY(0px) translateX(0px);
@@ -171,7 +169,6 @@
   }
 
   @keyframes float-delayed {
-
     0%,
     100% {
       transform: translateY(0px) translateX(0px);
@@ -183,7 +180,6 @@
   }
 
   @keyframes gradient-x {
-
     0%,
     100% {
       background-size: 200% 200%;

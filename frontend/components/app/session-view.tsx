@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { DataPacket_Kind, RemoteParticipant, RoomEvent } from 'livekit-client';
 import { motion } from 'motion/react';
+import { useRoomContext } from '@livekit/components-react';
 import type { AppConfig } from '@/app-config';
 import { ChatTranscript } from '@/components/app/chat-transcript';
+import { ImageViewer } from '@/components/app/image-viewer';
 import { PreConnectMessage } from '@/components/app/preconnect-message';
 import { TileLayout } from '@/components/app/tile-layout';
-
 import {
   AgentControlBar,
   type ControlBarControls,
@@ -63,10 +65,6 @@ interface SessionViewProps {
   appConfig: AppConfig;
 }
 
-import { useRoomContext } from '@livekit/components-react';
-import { RoomEvent, DataPacket_Kind, RemoteParticipant } from 'livekit-client';
-import { ImageViewer } from '@/components/app/image-viewer';
-
 // ... (existing imports)
 
 export const SessionView = ({
@@ -80,7 +78,9 @@ export const SessionView = ({
   const messages = useChatMessages();
   const [chatOpen, setChatOpen] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const [generatedImage, setGeneratedImage] = useState<{ url: string, prompt: string } | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<{ url: string; prompt: string } | null>(
+    null
+  );
 
   const controls: ControlBarControls = {
     leave: true,
@@ -100,15 +100,20 @@ export const SessionView = ({
   }, [messages]);
 
   useEffect(() => {
-    const onDataReceived = (payload: Uint8Array, participant?: RemoteParticipant, kind?: DataPacket_Kind, topic?: string) => {
-      if (topic === "agent_events") {
+    const onDataReceived = (
+      payload: Uint8Array,
+      participant?: RemoteParticipant,
+      kind?: DataPacket_Kind,
+      topic?: string
+    ) => {
+      if (topic === 'agent_events') {
         try {
           const parsedPayload = JSON.parse(new TextDecoder().decode(payload));
-          if (parsedPayload.type === "image") {
+          if (parsedPayload.type === 'image') {
             setGeneratedImage(parsedPayload.data);
           }
         } catch (e) {
-          console.error("Failed to parse agent event:", e);
+          console.error('Failed to parse agent event:', e);
         }
       }
     };
@@ -121,29 +126,29 @@ export const SessionView = ({
 
   return (
     <section className="bg-background relative z-10 h-full w-full overflow-hidden" {...props}>
-
       {/* Enhanced Background with Floating Shapes */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.02]"
         style={{
           backgroundImage: `radial-gradient(circle, #FE6F61 1px, transparent 1px)`,
           backgroundSize: '30px 30px',
         }}
       />
-      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-[100px] pointer-events-none animate-float opacity-40" />
-      <div className="absolute bottom-[-10%] left-[-5%] w-[350px] h-[350px] bg-gradient-to-tl from-secondary/10 to-transparent rounded-full blur-[90px] pointer-events-none animate-float-delayed opacity-40" />
+      <div className="from-primary/10 animate-float pointer-events-none absolute top-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full bg-gradient-to-br to-transparent opacity-40 blur-[100px]" />
+      <div className="from-secondary/10 animate-float-delayed pointer-events-none absolute bottom-[-10%] left-[-5%] h-[350px] w-[350px] rounded-full bg-gradient-to-tl to-transparent opacity-40 blur-[90px]" />
 
       {/* Enhanced Branding Header */}
-      <div className="absolute top-4 left-4 z-50 group">
-        <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/90 border border-white/60 backdrop-blur-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+      <div className="group absolute top-4 left-4 z-50">
+        <div className="flex items-center gap-3 rounded-full border border-white/60 bg-white/90 px-5 py-2.5 shadow-lg backdrop-blur-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
           <div className="relative">
             <img
               src="/tata1mg-sticker.svg"
               alt="Tata 1mg"
-              className="w-8 h-8 drop-shadow-lg transition-transform duration-300 group-hover:rotate-12"
+              className="h-8 w-8 drop-shadow-lg transition-transform duration-300 group-hover:rotate-12"
             />
-            <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-50 transition-opacity" />
+            <div className="bg-primary/20 absolute inset-0 rounded-full opacity-0 blur-md transition-opacity group-hover:opacity-50" />
           </div>
-          <div className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent tracking-tight">
+          <div className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl font-bold tracking-tight text-transparent">
             Tata 1mg
           </div>
         </div>
@@ -184,12 +189,12 @@ export const SessionView = ({
         {appConfig.isPreConnectBufferEnabled && (
           <PreConnectMessage messages={messages} className="pb-4" />
         )}
-        <div className="bg-background/95 backdrop-blur-xl relative mx-auto max-w-2xl pb-3 md:pb-12 rounded-t-3xl border-t-2 border-primary/20 shadow-[0_-15px_50px_-20px_rgba(254,111,97,0.2)]">
+        <div className="bg-background/95 border-primary/20 relative mx-auto max-w-2xl rounded-t-3xl border-t-2 pb-3 shadow-[0_-15px_50px_-20px_rgba(254,111,97,0.2)] backdrop-blur-xl md:pb-12">
           <Fade bottom className="absolute inset-x-0 top-0 h-4 -translate-y-full" />
           <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
-          <div className="absolute bottom-2 left-0 right-0 text-center">
-            <p className="text-[9px] text-muted-foreground/60 font-medium tracking-wider uppercase flex items-center justify-center gap-2">
-              <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+          <div className="absolute right-0 bottom-2 left-0 text-center">
+            <p className="text-muted-foreground/60 flex items-center justify-center gap-2 text-[9px] font-medium tracking-wider uppercase">
+              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
               © 2025 · TATA 1MG · CONNECTED
             </p>
           </div>

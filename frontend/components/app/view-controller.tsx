@@ -47,11 +47,7 @@ export function ViewController() {
     <AnimatePresence mode="wait">
       {/* Welcome screen */}
       {!isSessionActive && (
-        <MotionWelcomeView
-          key="welcome"
-          {...VIEW_MOTION_PROPS}
-          onStart={startSession}
-        />
+        <MotionWelcomeView key="welcome" {...VIEW_MOTION_PROPS} onStart={startSession} />
       )}
       {/* Session view */}
       {isSessionActive && (
