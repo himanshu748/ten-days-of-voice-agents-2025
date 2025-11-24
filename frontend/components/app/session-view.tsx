@@ -184,12 +184,13 @@ export const SessionView = ({
         {appConfig.isPreConnectBufferEnabled && (
           <PreConnectMessage messages={messages} className="pb-4" />
         )}
-        <div className="bg-background/80 backdrop-blur-md relative mx-auto max-w-2xl pb-3 md:pb-12 rounded-t-2xl border-t border-primary/10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+        <div className="bg-background/95 backdrop-blur-xl relative mx-auto max-w-2xl pb-3 md:pb-12 rounded-t-3xl border-t-2 border-primary/20 shadow-[0_-15px_50px_-20px_rgba(254,111,97,0.2)]">
           <Fade bottom className="absolute inset-x-0 top-0 h-4 -translate-y-full" />
           <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
           <div className="absolute bottom-2 left-0 right-0 text-center">
-            <p className="text-[9px] text-muted-foreground/60 font-medium tracking-wider uppercase">
-              © 2025 · TATA 1MG
+            <p className="text-[9px] text-muted-foreground/60 font-medium tracking-wider uppercase flex items-center justify-center gap-2">
+              <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+              © 2025 · TATA 1MG · CONNECTED
             </p>
           </div>
         </div>
