@@ -155,38 +155,75 @@
   }
 }
 
-@layer utils {
+@layer utilities {
+
+  /* Custom Animations for UI Enhancements */
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px) translateX(0px);
+    }
+
+    50% {
+      transform: translateY(-20px) translateX(10px);
+    }
+  }
+
+  @keyframes float-delayed {
+
+    0%,
+    100% {
+      transform: translateY(0px) translateX(0px);
+    }
+
+    50% {
+      transform: translateY(20px) translateX(-10px);
+    }
+  }
+
+  @keyframes gradient-x {
+
+    0%,
+    100% {
+      background-size: 200% 200%;
+      background-position: left center;
+    }
+
+    50% {
+      background-size: 200% 200%;
+      background-position: right center;
+    }
+  }
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
 
-  @keyframes float {
-    0% {
-      transform: translateY(0px);
-    }
+}
 
-    50% {
-      transform: translateY(-20px);
-    }
+50% {
+  transform: translateY(-20px);
+}
 
-    100% {
-      transform: translateY(0px);
-    }
+100% {
+  transform: translateY(0px);
+}
+}
+
+.animate-steam {
+  animation: steam 2s ease-out infinite;
+}
+
+@keyframes steam {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
   }
 
-  .animate-steam {
-    animation: steam 2s ease-out infinite;
+  100% {
+    transform: translateY(-20px) scale(1.5);
+    opacity: 0;
   }
-
-  @keyframes steam {
-    0% {
-      transform: translateY(0) scale(1);
-      opacity: 0.8;
-    }
-
-    100% {
-      transform: translateY(-20px) scale(1.5);
-      opacity: 0;
-    }
-  }
+}
 }
