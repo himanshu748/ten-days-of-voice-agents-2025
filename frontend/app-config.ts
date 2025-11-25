@@ -30,10 +30,10 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: '/tata1mg-logo.svg', // Keeping the logo file for now as I don't have a new one, but changing the text
-  accent: '#4F46E5', // Indigo-600 for a "learning/academic" vibe
-  logoDark: '/tata1mg-logo.svg',
-  accentDark: '#4F46E5', // Indigo-600
+  logo: '/logo.svg',
+  accent: '#DC2626', // Red-600
+  logoDark: '/logo.svg',
+  accentDark: '#DC2626', // Red-600
   startButtonText: 'Start Learning Session',
 
   // for LiveKit Cloud Sandbox
