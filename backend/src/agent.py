@@ -2,6 +2,7 @@ import json
 import logging
 import traceback
 import time
+import asyncio
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
@@ -158,50 +159,77 @@ class ActiveRecallCoach(Agent):
         - "Let's learn about variables" → switch_mode(mode='learn', concept_id='variables')
         - "I want to teach you" → switch_mode(mode='teach_back')
         """
-        if mode not in ["learn", "quiz", "teach_back"]:
-            return "Invalid mode. Please choose learn, quiz, or teach_back."
-        
-        old_mode = self.current_mode
-        self.current_mode = mode
-        
-        if concept_id:
-            # Validate concept_id
-            valid_ids = [c["id"] for c in self.content]
-            if concept_id in valid_ids:
-                self.current_concept_id = concept_id
-            else:
-                return f"Concept '{concept_id}' not found. Available: {', '.join(valid_ids)}"
-        elif not self.current_concept_id and self.content:
-            # Auto-select first concept if none is set
-            self.current_concept_id = self.content[0]["id"]
-            logger.info(f"Auto-selected first concept: {self.current_concept_id}")
-        
-        # Get the appropriate voice ID for the new mode
-        new_voice_id = self.voice_ids.get(mode)
-        
-        if hasattr(self, "current_session") and self.current_session:
-            # Log the switch
-            logger.info(f"==========================================")
-            logger.info(f"MODE SWITCH: {old_mode} → {mode}")
-            logger.info(f"VOICE SWITCH: {new_voice_id}")
-            logger.info(f"CONCEPT: {self.current_concept_id}")
-            logger.info(f"==========================================")
+        try:
+            if mode not in ["learn", "quiz", "teach_back"]:
+                return "Invalid mode. Please choose learn, quiz, or teach_back."
             
-            # Update the session's TTS options
-            if self.current_session.tts:
-                self.current_session.tts.update_options(voice=new_voice_id)
-        
-        # Update instructions to reflect new mode
-        self.instructions = self._get_instructions()
-        
-        # Get concept title for user-friendly message
-        concept_title = self.current_concept_id
-        if self.current_concept_id:
-            concept_obj = next((c for c in self.content if c["id"] == self.current_concept_id), None)
-            if concept_obj:
-                concept_title = concept_obj["title"]
-        
-        return f"Mode switched to {mode.upper()}. Voice is now {new_voice_id}. Ready to work on {concept_title}."
+            old_mode = self.current_mode
+            self.current_mode = mode
+            
+            if concept_id:
+                # Validate concept_id
+                valid_ids = [c["id"] for c in self.content]
+                if concept_id in valid_ids:
+                    self.current_concept_id = concept_id
+                else:
+                    return f"Concept '{concept_id}' not found. Available: {', '.join(valid_ids)}"
+            elif not self.current_concept_id and self.content:
+                # Auto-select first concept if none is set
+                self.current_concept_id = self.content[0]["id"]
+                logger.info(f"Auto-selected first concept: {self.current_concept_id}")
+            
+            # Get the appropriate voice ID for the new mode
+            new_voice_id = self.voice_ids.get(mode)
+            
+            if hasattr(self, "current_session") and self.current_session:
+                # Log the switch
+                logger.info(f"==========================================")
+                logger.info(f"MODE SWITCH: {old_mode} → {mode}")
+                logger.info(f"VOICE SWITCH: {new_voice_id}")
+                logger.info(f"CONCEPT: {self.current_concept_id}")
+                logger.info(f"==========================================")
+                
+                # Update the session's TTS options
+                if self.current_session.tts:
+                    try:
+                        # Run update_options in a thread to avoid blocking the event loop
+                        await asyncio.to_thread(self.current_session.tts.update_options, voice=new_voice_id)
+                        logger.info(f"Voice updated successfully to {new_voice_id}")
+                    except Exception as e:
+                        logger.error(f"Failed to update voice options: {e}")
+                        # Don't fail the whole switch if voice fails, but log it
+            
+            # Update instructions to reflect new mode
+            self.instructions = self._get_instructions()
+            
+            # Get concept details
+            concept_obj = None
+            if self.current_concept_id:
+                concept_obj = next((c for c in self.content if c["id"] == self.current_concept_id), None)
+            
+            concept_title = concept_obj["title"] if concept_obj else "Unknown Concept"
+            
+            # Construct a directive response for the LLM
+            response = f"Mode switched to {mode.upper()}. Voice is now {new_voice_id}. Concept is {concept_title}.\n\n"
+            
+            if mode == "learn" and concept_obj:
+                response += f"ACTION REQUIRED: Explain the concept '{concept_title}' to the user using this summary:\n"
+                response += f"'{concept_obj['summary']}'\n"
+                response += "Then ask if they want to be quizzed."
+                
+            elif mode == "quiz" and concept_obj:
+                response += f"ACTION REQUIRED: Ask the user this question (or similar) to test their knowledge:\n"
+                response += f"'{concept_obj['sample_question']}'"
+                
+            elif mode == "teach_back":
+                response += f"ACTION REQUIRED: Ask the user to explain '{concept_title}' to you in their own words. Listen carefully."
+                
+            return response
+            
+        except Exception as e:
+            logger.error(f"Error in switch_mode: {e}")
+            logger.error(traceback.format_exc())
+            return f"Error switching mode: {e}"
 
     @function_tool
     async def evaluate_teach_back(
