@@ -5,8 +5,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
-from typing import Annotated, List
-from mcp_integration import mcp_client
+from typing import Annotated, List, Dict, Any, Optional
 from livekit.agents import (
     Agent,
     AgentSession,
@@ -20,6 +19,7 @@ from livekit.agents import (
     tokenize,
     function_tool,
     RunContext,
+    llm,
 )
 from livekit.plugins import murf, silero, google, deepgram, noise_cancellation
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
@@ -30,257 +30,194 @@ env_path = Path(__file__).parent.parent / ".env.local"
 load_dotenv(dotenv_path=env_path)
 
 
-class Assistant(Agent):
+class ActiveRecallCoach(Agent):
     def __init__(self) -> None:
-        # Load history to inject into context
-        history_context = self._get_history_context()
+        # Load content
+        self.content = self._load_content()
+        self.current_mode = "learn"  # Start with learn mode so agent can speak immediately
+        self.current_concept_id = None
         
-        super().__init__(
-            instructions=f"""You are a friendly, supportive Tata 1mg Health Assistant - think of yourself as a caring friend who checks in daily.
-            
-            **YOUR VIBE:**
-            - Casual and warm (use "Hey!", "How's it going?", "That's awesome!")
-            - Genuinely curious about the user's day
-            - Supportive but realistic (no toxic positivity)
-            - Keep it brief and conversational (aim for 2-3 minute check-ins)
-            
-            **YOUR GOAL:**
-            Quick daily wellness check-in covering:
-            1. **Greet & Get Name**: If this is a first session or you don't know their name, ask "What's your name?" warmly
-            2. **Mood/Energy**: "Hey! How are you feeling today?" or "What's your energy like?"
-            3. **Goals**: "What's on your plate today?" or "Any goals you're tackling?"
-            4. **Follow-up**: Ask WHY a goal matters or offer to break big goals into smaller steps
-            5. **Quick Recap**: Summarize mood + 1-3 goals, confirm with user
-            6. **Save**: Use save_checkin tool WITH their name after confirmation
-            
-            **TOOLS YOU HAVE:**
-            1. save_checkin - After confirming with the user, save their mood + goals to the wellness log.
-            2. save_to_notion - Save the check-in to Notion (use when user asks to save to Notion).
-            3. create_tasks_in_todoist - Convert goals into Todoist tasks (use when user wants tasks created).
-            4. get_weekly_reflection - Analyze past week's data for trends (use when user asks "how has my week been?")
-            
-            **MCP INTEGRATION (ADVANCED):**
-            If the user asks to "save this to Notion" or "create tasks" or "add to Todoist", you can use the MCP tools above.
-            - Always confirm what you're going to do before calling these tools.
-            - If credentials aren't configured, tell the user they need to set up API tokens.
-            
-            **CONTEXT FROM PREVIOUS SESSIONS:**
-            {history_context}
-            
-            -   Avoid toxic positivity; be real.
-            -   If the user reports serious distress, suggest professional help gently, but do not diagnose.
-            """,
-        )
-
-    def _get_history_context(self) -> str:
-        """Reads the wellness_log.json and returns a summary of the last session."""
-        try:
-            # wellness_log.json is in the project root
-            log_path = Path(__file__).resolve().parent.parent.parent / "wellness_log.json"
-            
-            if not log_path.exists():
-                return "No previous check-ins found. This is the first session."
-            
-            with open(log_path, "r") as f:
-                data = json.load(f)
-                
-            if not data:
-                return "No previous check-ins found."
-                
-            # Get the most recent entry
-            last_entry = data[-1]
-            return f"""
-            Last Check-in ({last_entry.get('date', 'Unknown Date')}):
-            - Mood: {last_entry.get('mood', 'Unknown')}
-            - Goals: {', '.join(last_entry.get('goals', []))}
-            - Summary: {last_entry.get('summary', '')}
-            """
-        except Exception as e:
-            logger.error(f"Error reading history: {e}")
-            return "Error retrieving past history."
-
-    @function_tool
-    async def save_checkin(
-        self,
-        ctx: RunContext,
-        mood: str,
-        goals: List[str],
-        summary: str,
-        user_name: str = "User",
-    ):
-        """Save the daily wellness check-in results.
-        
-        Use this tool AFTER the user has confirmed the recap of their mood and goals.
-        
-        Args:
-            mood: The user's self-reported mood or energy level.
-            goals: A list of 1-3 objectives the user mentioned.
-            summary: A brief, one-sentence summary of the user's state generated by you.
-            user_name: The user's name (ask if you don't know it yet).
-        """
-        logger.info(f"Saving check-in: Mood={mood}, Goals={goals}")
-        
-        entry = {
-            "timestamp": int(time.time()),
-            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "user_name": user_name,
-            "mood": mood,
-            "goals": goals,
-            "summary": summary
+        # Define voice IDs for each mode
+        self.voice_ids = {
+            "learn": "en-US-matthew",
+            "quiz": "en-US-alicia",
+            "teach_back": "en-US-ken",
         }
-        
-        try:
-            log_path = Path(__file__).resolve().parent.parent.parent / "wellness_log.json"
-            
-            data = []
-            if log_path.exists():
-                with open(log_path, "r") as f:
-                    try:
-                        data = json.load(f)
-                    except json.JSONDecodeError:
-                        data = []
-            
-            data.append(entry)
-            
-            with open(log_path, "w") as f:
-                json.dump(data, f, indent=2)
-                
-            return "Check-in saved successfully. I'll remember this for next time!"
-            
-        except Exception as e:
-            logger.error(f"Failed to save check-in: {e}")
-            return f"I had a little trouble writing to my journal, but I've noted it down. (Error: {e})"
-    
-    @function_tool
-    async def save_to_notion(
-        self,
-        ctx: RunContext,
-        mood: str,
-        goals: List[str],
-        summary: str,
-        user_name: str = "User",
-    ):
-        """Save the wellness check-in to Notion database.
-        
-        Use this tool when the user explicitly asks to save to Notion or wants to track their wellness in Notion.
-        
-        Args:
-            mood: The user's mood
-            goals: List of goals mentioned
-            summary: Summary of the session
-        """
-        logger.info("Attempting to save to Notion...")
-        
-        date = datetime.now().strftime("%Y-%m-%d")
-        result = await mcp_client.create_notion_wellness_entry(
-            date=date,
-            user_name=user_name,
-            mood=mood,
-            goals=goals,
-            summary=summary
-        )
-        
-        if result["status"] == "success":
-            return f"I've saved your wellness check-in to Notion! {result['message']}"
-        else:
-            return f"I couldn't save to Notion right now: {result['message']}"
-    
-    @function_tool
-    async def create_tasks_in_todoist(
-        self,
-        ctx: RunContext,
-        goals: List[str],
-        user_name: str = "User",
-    ):
-        """Convert user's wellness goals into Todoist tasks.
-        
-        Use this when the user wants to turn their goals into actionable tasks in Todoist.
-        
-        Args:
-            goals: List of goals to convert to tasks
-        """
-        logger.info(f"Creating {len(goals)} tasks in Todoist...")
-        
-        result = await mcp_client.create_todoist_tasks(
-            goals=goals,
-            user_name=user_name
-        )
-        
-        if result["status"] == "success":
-            tasks_str = ", ".join(f"'{g}'" for g in goals)
-            return f"I've created {len(goals)} tasks in your Todoist: {tasks_str}. {result['message']}"
-        else:
-            return f"I couldn't create tasks in Todoist: {result['message']}"
-    
-    @function_tool
-    async def get_weekly_reflection(
-        self,
-        ctx: RunContext,
-    ):
-        """Analyze the past week's wellness data and provide insights.
-        
-        Use this when the user asks "how has my week been?" or wants to see trends.
-        """
-        logger.info("Generating weekly reflection...")
-        
-        try:
-            log_path = Path(__file__).resolve().parent.parent.parent / "wellness_log.json"
-            
-            if not log_path.exists():
-                return "You haven't had any check-ins yet this week. Let's start tracking!"
-            
-            with open(log_path, "r") as f:
-                data = json.load(f)
-            
-            if not data:
-                return "No check-ins found yet. Let's start your wellness journey!"
-            
-            # Get entries from last 7 days
-            from datetime import datetime, timedelta
-            week_ago = datetime.now() - timedelta(days=7)
-            
-            recent_entries = []
-            for entry in data:
-                try:
-                    entry_date = datetime.strptime(entry.get('date', ''), "%Y-%m-%d %H:%M:%S")
-                    if entry_date >= week_ago:
-                        recent_entries.append(entry)
-                except:
-                    continue
-            
-            if not recent_entries:
-                return f"I found {len(data)} total check-ins, but none in the past week. Want to do one now?"
-            
-            # Analyze trends
-            moods = [e.get('mood', '') for e in recent_entries]
-            total_goals = sum(len(e.get('goals', [])) for e in recent_entries)
-            
-            reflection = f"""Here's your week at a glance:
-            
-📊 **This Week**: {len(recent_entries)} check-ins
-🎯 **Goals Set**: {total_goals} total goals
-📝 **Recent Moods**: {', '.join(moods[-3:])}
 
-💭 **Insight**: """
-            
-            # Simple insights
-            if len(recent_entries) >= 5:
-                reflection += "You've been really consistent with check-ins - that's awesome! "
-            elif len(recent_entries) >= 3:
-                reflection += "Good momentum this week! "
-            else:
-                reflection += "You're getting started - keep it up! "
-            
-            if total_goals > len(recent_entries) * 2:
-                reflection += "You're setting ambitious goals. Remember to celebrate small wins too!"
-            else:
-                reflection += "Your goal-setting seems balanced and achievable."
-            
-            return reflection
-            
+        super().__init__(
+            instructions=self._get_instructions(),
+        )
+
+    def _load_content(self) -> List[Dict[str, Any]]:
+        try:
+            content_path = Path(__file__).resolve().parent.parent.parent / "shared-data" / "day4_tutor_content.json"
+            with open(content_path, "r") as f:
+                return json.load(f)
         except Exception as e:
-            logger.error(f"Error generating reflection: {e}")
-            return "I had trouble analyzing your week, but I'm here if you want to chat about it!"
+            logger.error(f"Error loading content: {e}")
+            return []
+
+    def _get_instructions(self) -> str:
+        concepts_str = json.dumps(self.content, indent=2)
+        
+        base_instructions = f"""You are an Active Recall Coach designed to help users learn concepts effectively.
+        
+        **AVAILABLE CONTENT:**
+        {concepts_str}
+        
+        **CURRENT MODE:** {self.current_mode.upper() if self.current_mode else 'NOT SET'}
+        
+        **YOUR BEHAVIOR:**
+        """
+        
+        if self.current_mode == "learn":
+            # Check if this is the first interaction (no concept selected)
+            if not self.current_concept_id:
+                mode_instructions = """
+                - **INITIAL GREETING** (First time users connect):
+                - Greet the user warmly and introduce yourself as their Active Recall Coach.
+                - List the available concepts from the content (Variables, Loops, etc.).
+                - Explain the three learning modes briefly:
+                  * **Learn** - I'll explain a concept to you (my current mode)
+                  * **Quiz** - I'll ask you questions to test your knowledge
+                  * **Teach-Back** - You explain the concept to me and I'll score your understanding
+                - Ask them which concept they'd like to focus on and which mode they prefer.
+                - Once they choose, use the `switch_mode` tool to activate that mode and concept.
+                """
+            else:
+                mode_instructions = """
+                - **LEARN Mode** (Voice: Matthew):
+                - Explain the chosen concept using the 'summary' from the content.
+                - Be engaging, clear, and concise.
+                - After explaining, ask if they are ready for a quiz or want to teach it back.
+                """
+        elif self.current_mode == "quiz":
+            mode_instructions = """
+            - **QUIZ Mode** (Voice: Alicia):
+            - Ask the 'sample_question' or generate a similar simple question about the concept.
+            - Wait for their answer.
+            - If correct, praise them and ask another question or suggest moving to Teach-Back.
+            - If incorrect, gently correct them and explain the right answer.
+            """
+        elif self.current_mode == "teach_back":
+            mode_instructions = """
+            - **TEACH-BACK Mode** (Voice: Ken):
+            - Ask the user to explain the concept to YOU.
+            - Listen carefully.
+            - After they explain, give them a **Score (0-10)** and brief qualitative feedback.
+            - Start your feedback with "Score: X/10".
+            - Be a fair but rigorous coach.
+            """
+        else:
+            # Initial greeting when no mode is set
+            mode_instructions = """
+            - **INITIAL GREETING**:
+            - Greet the user warmly.
+            - Briefly introduce yourself as their Active Recall Coach.
+            - List the available concepts from the content (Variables, Loops, etc.).
+            - Explain the three learning modes:
+              * **Learn** - I'll explain a concept to you
+              * **Quiz** - I'll ask you questions to test your knowledge
+              * **Teach-Back** - You explain the concept to me and I'll score your understanding
+            - Ask them which mode they'd like to start with and which concept they want to focus on.
+            - Once they choose, use the `switch_mode` tool to activate that mode.
+            """
+
+        common_instructions = """
+        **CRITICAL MODE SWITCHING RULES:**
+        - You MUST call `switch_mode` when user says ANY of these:
+          * "quiz me", "test me", "ask me questions" → switch_mode(mode='quiz')
+          * "teach me", "explain", "let's learn" → switch_mode(mode='learn') 
+          * "I'll teach you", "let me explain", "teach back" → switch_mode(mode='teach_back')
+          * "let's do [concept]" → switch_mode(concept_id='concept')
+        - After switching, immediately start acting in that mode - don't ask for confirmation
+        - Keep all responses brief and conversational (voice interface)
+        - ALWAYS acknowledge the mode switch by starting your response with the new mode behavior
+        """
+        
+        return base_instructions + mode_instructions + common_instructions
+
+    @function_tool
+    async def switch_mode(
+        self,
+        ctx: RunContext,
+        mode: Annotated[str, "The mode to switch to: 'learn', 'quiz', or 'teach_back'"],
+        concept_id: Annotated[Optional[str], "The id of the concept to focus on (e.g., 'variables', 'loops'). If None, keep current or use first available."] = None,
+    ):
+        """Switch the agent's learning mode and/or active concept.
+        
+        IMPORTANT: Call this tool IMMEDIATELY when:
+        - User says "let's learn", "teach me", "explain" → mode='learn'
+        - User says "quiz me", "test me", "ask me questions" → mode='quiz'  
+        - User says "I'll teach you", "let me explain", "I want to teach back" → mode='teach_back'
+        - User mentions a new concept like "variables" or "loops"
+        - User explicitly chooses a mode during the initial greeting
+        
+        Examples:
+        - "Quiz me on loops" → switch_mode(mode='quiz', concept_id='loops')
+        - "Let's learn about variables" → switch_mode(mode='learn', concept_id='variables')
+        - "I want to teach you" → switch_mode(mode='teach_back')
+        """
+        if mode not in ["learn", "quiz", "teach_back"]:
+            return "Invalid mode. Please choose learn, quiz, or teach_back."
+        
+        old_mode = self.current_mode
+        self.current_mode = mode
+        
+        if concept_id:
+            # Validate concept_id
+            valid_ids = [c["id"] for c in self.content]
+            if concept_id in valid_ids:
+                self.current_concept_id = concept_id
+            else:
+                return f"Concept '{concept_id}' not found. Available: {', '.join(valid_ids)}"
+        elif not self.current_concept_id and self.content:
+            # Auto-select first concept if none is set
+            self.current_concept_id = self.content[0]["id"]
+            logger.info(f"Auto-selected first concept: {self.current_concept_id}")
+        
+        # Get the appropriate voice ID for the new mode
+        new_voice_id = self.voice_ids.get(mode)
+        
+        if hasattr(self, "current_session") and self.current_session:
+            # Log the switch
+            logger.info(f"==========================================")
+            logger.info(f"MODE SWITCH: {old_mode} → {mode}")
+            logger.info(f"VOICE SWITCH: {new_voice_id}")
+            logger.info(f"CONCEPT: {self.current_concept_id}")
+            logger.info(f"==========================================")
+            
+            # Update the session's TTS options
+            if self.current_session.tts:
+                self.current_session.tts.update_options(voice=new_voice_id)
+        
+        # Update instructions to reflect new mode
+        self.instructions = self._get_instructions()
+        
+        # Get concept title for user-friendly message
+        concept_title = self.current_concept_id
+        if self.current_concept_id:
+            concept_obj = next((c for c in self.content if c["id"] == self.current_concept_id), None)
+            if concept_obj:
+                concept_title = concept_obj["title"]
+        
+        return f"Mode switched to {mode.upper()}. Voice is now {new_voice_id}. Ready to work on {concept_title}."
+
+    @function_tool
+    async def evaluate_teach_back(
+        self,
+        ctx: RunContext,
+        user_explanation: str,
+    ):
+        """Evaluate the user's explanation in Teach-Back mode.
+        
+        Args:
+            user_explanation: The text of what the user said.
+        """
+        # This is a placeholder for more advanced scoring. 
+        # For now, the LLM will generate the feedback naturally based on instructions.
+        # This tool exists to explicitly mark the "grading" event if we wanted to store scores later.
+        return "Explanation received. Please provide feedback to the user."
 
 
 def prewarm(proc: JobProcess):
@@ -293,20 +230,23 @@ async def entrypoint(ctx: JobContext):
             "room": ctx.room.name,
         }
 
+        # Initialize the agent
+        coach = ActiveRecallCoach()
+
         session = AgentSession(
             stt=deepgram.STT(model="nova-3"),
             llm=google.LLM(
                 model="gemini-2.5-flash",
             ),
-            tts=murf.TTS(
-                    voice="en-US-matthew",
-                    style="Conversation",
-                    tokenizer=tokenize.basic.SentenceTokenizer(min_sentence_len=1),
-                ),
+            # Start with the learn voice
+            tts=murf.TTS(voice=coach.voice_ids["learn"], style="Conversation"),
             turn_detection=MultilingualModel(),
             vad=ctx.proc.userdata["vad"],
             preemptive_generation=True,
         )
+        
+        # Give the agent access to the session
+        coach.current_session = session
 
         usage_collector = metrics.UsageCollector()
 
@@ -322,7 +262,7 @@ async def entrypoint(ctx: JobContext):
         ctx.add_shutdown_callback(log_usage)
 
         await session.start(
-            agent=Assistant(),
+            agent=coach,
             room=ctx.room,
             room_input_options=RoomInputOptions(
                 noise_cancellation=noise_cancellation.BVC(),

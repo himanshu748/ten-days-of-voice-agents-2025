@@ -130,7 +130,7 @@ export const SessionView = ({
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.02]"
         style={{
-          backgroundImage: `radial-gradient(circle, #FE6F61 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, #4F46E5 1px, transparent 1px)`,
           backgroundSize: '30px 30px',
         }}
       />
@@ -141,15 +141,11 @@ export const SessionView = ({
       <div className="group absolute top-4 left-4 z-50">
         <div className="flex items-center gap-3 rounded-full border border-white/60 bg-white/90 px-5 py-2.5 shadow-lg backdrop-blur-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
           <div className="relative">
-            <img
-              src="/tata1mg-sticker.svg"
-              alt="Tata 1mg"
-              className="h-8 w-8 drop-shadow-lg transition-transform duration-300 group-hover:rotate-12"
-            />
+            <span className="text-2xl">🎓</span>
             <div className="bg-primary/20 absolute inset-0 rounded-full opacity-0 blur-md transition-opacity group-hover:opacity-50" />
           </div>
           <div className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl font-bold tracking-tight text-transparent">
-            Tata 1mg
+            Active Recall Coach
           </div>
         </div>
       </div>
@@ -195,7 +191,7 @@ export const SessionView = ({
           <div className="absolute right-0 bottom-2 left-0 text-center">
             <p className="text-muted-foreground/60 flex items-center justify-center gap-2 text-[9px] font-medium tracking-wider uppercase">
               <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
-              © 2025 · TATA 1MG · CONNECTED
+              © 2025 · ACTIVE RECALL COACH · CONNECTED
             </p>
           </div>
         </div>

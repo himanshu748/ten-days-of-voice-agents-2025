@@ -14,12 +14,12 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
       <div className="from-primary/20 to-secondary/30 animate-float-delayed pointer-events-none absolute right-[-10%] bottom-[-20%] h-[500px] w-[500px] rounded-full bg-gradient-to-tl opacity-60 blur-[100px]" />
       <div className="pointer-events-none absolute top-[20%] right-[10%] h-[300px] w-[300px] animate-pulse rounded-full bg-teal-200/20 blur-[80px]" />
 
-      {/* Medical Cross Shapes (subtle) */}
-      <div className="text-primary/5 pointer-events-none absolute top-[10%] left-[15%] rotate-12 text-8xl">
-        +
+      {/* Academic Shapes (subtle) */}
+      <div className="text-primary/5 pointer-events-none absolute top-[10%] left-[15%] rotate-12 text-8xl font-serif">
+        A
       </div>
-      <div className="text-primary/5 pointer-events-none absolute right-[20%] bottom-[15%] -rotate-12 text-6xl">
-        +
+      <div className="text-primary/5 pointer-events-none absolute right-[20%] bottom-[15%] -rotate-12 text-6xl font-serif">
+        ?
       </div>
 
       <div className="relative z-10 flex max-w-4xl flex-col items-center px-6 text-center">
@@ -30,11 +30,7 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <img
-            src="/tata1mg-brand.png"
-            alt="Tata 1mg"
-            className="h-16 object-contain drop-shadow-lg md:h-20"
-          />
+          {/* Placeholder for Logo if needed, or just text */}
         </motion.div>
 
         {/* 2. Enhanced Sticker with Better Hover Effects */}
@@ -44,12 +40,8 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           transition={{ duration: 0.8, type: 'spring', bounce: 0.5 }}
           className="group relative mb-10 cursor-pointer"
         >
-          <div className="relative z-10 h-32 w-32 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:drop-shadow-[0_0_25px_rgba(254,111,97,0.5)]">
-            <img
-              src="/tata1mg-sticker.svg"
-              alt="Tata 1mg Sticker"
-              className="h-full w-full drop-shadow-2xl"
-            />
+          <div className="relative z-10 h-32 w-32 flex items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:drop-shadow-[0_0_25px_rgba(79,70,229,0.5)]">
+            <span className="text-6xl">🎓</span>
           </div>
           {/* Enhanced Glow Effect */}
           <div className="from-primary/40 via-primary/30 to-primary/40 absolute inset-0 animate-pulse rounded-full bg-gradient-to-r opacity-60 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
@@ -64,10 +56,10 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           className="mb-12 space-y-6"
         >
           <h1 className="from-primary via-primary/80 to-primary animate-gradient-x bg-gradient-to-r bg-clip-text text-5xl font-bold tracking-tight text-transparent drop-shadow-sm md:text-7xl">
-            Daily Wellness Companion
+            Active Recall Coach
           </h1>
           <p className="text-muted-foreground mx-auto max-w-2xl text-xl leading-relaxed font-light md:text-2xl">
-            A supportive voice companion for daily check-ins about your mood, energy, and goals.
+            Master concepts effectively. Learn, Quiz, and Teach-Back.
           </p>
 
           {/* Status Badge */}
@@ -87,9 +79,9 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           className="mb-12 flex flex-wrap justify-center gap-4"
         >
           {[
-            { icon: Pulse, text: 'Mood & Energy Tracking', color: 'text-rose-500' },
-            { icon: Target, text: 'Daily Goal Setting', color: 'text-blue-500' },
-            { icon: ClockCounterClockwise, text: 'Progress History', color: 'text-amber-500' },
+            { icon: Pulse, text: 'Learn Concepts', color: 'text-indigo-500' },
+            { icon: Target, text: 'Take Quizzes', color: 'text-blue-500' },
+            { icon: ClockCounterClockwise, text: 'Teach Back & Score', color: 'text-amber-500' },
           ].map((feature, i) => (
             <motion.div
               key={i}
@@ -119,7 +111,7 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           >
             {/* Shine effect */}
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-            <span className="relative z-10">Start Your Daily Check-in</span>
+            <span className="relative z-10">Start Learning Session</span>
             <ArrowRight className="relative z-10 ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
           </Button>
         </motion.div>
@@ -132,7 +124,7 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
         transition={{ delay: 1, duration: 1 }}
         className="text-muted-foreground/60 absolute bottom-6 text-xs font-medium tracking-wide"
       >
-        © 2025 TATA 1MG · SECURE & PRIVATE
+        © 2025 ACTIVE RECALL COACH · POWERED BY MURF AI
       </motion.div>
     </div>
   );

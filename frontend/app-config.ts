@@ -20,21 +20,21 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Tata 1mg',
-  pageTitle: 'Tata 1mg - Daily Wellness Companion',
+  companyName: 'Active Recall',
+  pageTitle: 'Active Recall Coach',
   pageDescription:
-    'A supportive voice companion for daily check-ins about your mood, energy, and goals.',
+    'Your personal tutor for mastering concepts through active recall. Learn, Quiz, and Teach-Back.',
 
   supportsChatInput: true,
   supportsVideoInput: true,
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: '/tata1mg-logo.svg',
-  accent: '#FE6F61', // Tata 1mg Orange-Red
+  logo: '/tata1mg-logo.svg', // Keeping the logo file for now as I don't have a new one, but changing the text
+  accent: '#4F46E5', // Indigo-600 for a "learning/academic" vibe
   logoDark: '/tata1mg-logo.svg',
-  accentDark: '#FE6F61', // Tata 1mg Orange-Red
-  startButtonText: 'Start Your Daily Check-in',
+  accentDark: '#4F46E5', // Indigo-600
+  startButtonText: 'Start Learning Session',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,
