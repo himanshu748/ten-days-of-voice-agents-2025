@@ -125,27 +125,27 @@ export const SessionView = ({
   }, [room]);
 
   return (
-    <section className="bg-background relative z-10 h-full w-full overflow-hidden" {...props}>
-      {/* Enhanced Background with Floating Shapes */}
+    <section className="bg-[#0a0a0a] relative z-10 h-full w-full overflow-hidden" {...props}>
+      {/* Enhanced Background with Floating Shapes - Premium PW Theme */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.02]"
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
-          backgroundImage: `radial-gradient(circle, #4F46E5 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, #DC2626 1px, transparent 1px)`,
           backgroundSize: '30px 30px',
         }}
       />
-      <div className="from-primary/10 animate-float pointer-events-none absolute top-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full bg-gradient-to-br to-transparent opacity-40 blur-[100px]" />
-      <div className="from-secondary/10 animate-float-delayed pointer-events-none absolute bottom-[-10%] left-[-5%] h-[350px] w-[350px] rounded-full bg-gradient-to-tl to-transparent opacity-40 blur-[90px]" />
+      <div className="from-red-900/20 animate-float pointer-events-none absolute top-[-10%] right-[-5%] h-[600px] w-[600px] rounded-full bg-gradient-to-br to-transparent opacity-40 blur-[120px]" />
+      <div className="from-yellow-700/10 animate-float-delayed pointer-events-none absolute bottom-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-gradient-to-tl to-transparent opacity-40 blur-[100px]" />
 
       {/* Enhanced Branding Header */}
       <div className="group absolute top-4 left-4 z-50">
-        <div className="flex items-center gap-3 rounded-full border border-white/60 bg-white/90 px-5 py-2.5 shadow-lg backdrop-blur-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/60 px-5 py-2.5 shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-red-900/20 hover:border-red-500/30">
           <div className="relative">
-            <span className="text-2xl">🎓</span>
-            <div className="bg-primary/20 absolute inset-0 rounded-full opacity-0 blur-md transition-opacity group-hover:opacity-50" />
+            <span className="text-2xl">⚛️</span>
+            <div className="bg-red-500/20 absolute inset-0 rounded-full opacity-0 blur-md transition-opacity group-hover:opacity-50" />
           </div>
-          <div className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl font-bold tracking-tight text-transparent">
-            Active Recall Coach
+          <div className="bg-gradient-to-r from-white via-neutral-200 to-white bg-[length:200%_auto] animate-gradient bg-clip-text text-xl font-bold tracking-tight text-transparent group-hover:from-red-400 group-hover:via-yellow-400 group-hover:to-red-400 transition-all">
+            Physics Wallah AI
           </div>
         </div>
       </div>
@@ -180,7 +180,7 @@ export const SessionView = ({
       {/* Bottom */}
       <MotionBottom
         {...BOTTOM_VIEW_MOTION_PROPS}
-        className="fixed inset-x-3 bottom-0 z-50 md:inset-x-12"
+        className="fixed inset-x-3 bottom-4 z-50 md:inset-x-12"
       >
         {appConfig.isPreConnectBufferEnabled && (
           <PreConnectMessage messages={messages} className="pb-4" />

@@ -16,5 +16,17 @@
         "title": "Functions",
         "summary": "Functions are reusable blocks of code that perform a specific task. You define a function using the 'def' keyword, followed by the function name and parentheses. Functions can take inputs (called arguments) and return outputs. They help organize your code and avoid repetition.",
         "sample_question": "Why are functions useful in programming?"
+    },
+    {
+        "id": "agentic_ai",
+        "title": "Agentic AI",
+        "summary": "Agentic AI refers to AI systems that can autonomously pursue complex goals. Unlike passive chatbots that just answer questions, agents can plan, use tools (like web search or code execution), and take actions to complete tasks. They operate in loops of thought, action, and observation.",
+        "sample_question": "What is the main difference between a standard chatbot and an Agentic AI?"
+    },
+    {
+        "id": "mcp",
+        "title": "Model Context Protocol (MCP)",
+        "summary": "The Model Context Protocol (MCP) is a standard for connecting AI models to external data and tools. It uses a Client-Host-Server architecture. The 'Host' (like an IDE) runs the 'Client', which connects to 'Servers' (like a database or file system tool). This allows AI to safely access your local resources.",
+        "sample_question": "Explain the three main components of the MCP architecture."
     }
 ]

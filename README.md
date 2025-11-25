@@ -1,60 +1,40 @@
-# Tata 1mg Voice Agent - Daily Wellness Companion
+# Physics Wallah AI Coach - Active Recall Companion
 
+Welcome to the **Physics Wallah AI Coach**! This project brings the energy and teaching style of Alakh Pandey (Physics Wallah) to an interactive AI voice agent.
 
-Welcome to the **AI Voice Agents Challenge** by [murf.ai](https://murf.ai)!
+## About the Project
 
-## About the Challenge
+This is an **Active Recall Coach** designed to help students master concepts through dialogue. It uses the **Model Context Protocol (MCP)** and **Agentic AI** principles to create a dynamic learning experience.
 
-We just launched **Murf Falcon** – the consistently fastest TTS API, and you're going to be among the first to test it out in ways never thought before!
-
-**Build 10 AI Voice Agents over the course of 10 Days** along with help from our devs and the community champs, and win rewards!
-
-### How It Works
-
-- One task to be provided everyday along with a GitHub repo for reference
-- Build a voice agent with specific personas and skills
-- Post on GitHub and share with the world on LinkedIn!
+**Key Features:**
+- **Persona**: Alakh Sir's energetic "Hello Bachhon!" style with Hinglish motivation.
+- **Active Recall**: Three modes of learning:
+    - **Learn**: The AI explains concepts (Variables, Loops, Agentic AI, MCP).
+    - **Quiz**: The AI tests your knowledge.
+    - **Teach-Back**: You teach the AI to prove your understanding.
+- **Powered by**: LiveKit Agents, Murf Falcon TTS (fastest voice synthesis), and Gemini LLM.
 
 ## Repository Structure
 
-This is a **monorepo** that contains both the backend and frontend for building voice agent applications. It's designed to be your starting point for each day's challenge task.
+This is a **monorepo** containing:
 
 ```
 falcon-tdova-nov25-livekit/
-├── backend/          # LiveKit Agents backend with Murf Falcon TTS
-├── frontend/         # React/Next.js frontend for voice interaction
-├── start_app.sh      # Convenience script to start all services
+├── backend/          # LiveKit Agents backend (Python) with PW Persona
+├── frontend/         # Next.js frontend with Red/Black PW Theme
+├── start_app.sh      # Script to start all services
 └── README.md         # This file
 ```
 
 ### Backend
-
-The backend is based on [LiveKit's agent-starter-python](https://github.com/livekit-examples/agent-starter-python) with modifications to integrate **Murf Falcon TTS** for ultra-fast, high-quality voice synthesis.
-
-**Features:**
-
-- Complete voice AI agent framework using LiveKit Agents
-- Murf Falcon TTS integration for fastest text-to-speech
-- LiveKit Turn Detector for contextually-aware speaker detection
-- Background voice cancellation
-- Integrated metrics and logging
-- Complete test suite with evaluation framework
-- Production-ready Dockerfile
-
-[→ Backend Documentation](./backend/README.md)
+Based on LiveKit's agent framework.
+- **Agent**: `ActiveRecallCoach` with custom instructions for the PW persona.
+- **Content**: `day4_tutor_content.json` contains the curriculum (Variables, Loops, Agentic AI, MCP).
 
 ### Frontend
-
-The frontend is based on [LiveKit's agent-starter-react](https://github.com/livekit-examples/agent-starter-react), providing a modern, beautiful UI for interacting with your voice agents.
-
-**Features:**
-
-- Real-time voice interaction with LiveKit Agents
-- Camera video streaming support
-- Screen sharing capabilities
-- Audio visualization and level monitoring
-- Light/dark theme switching
-- Highly customizable branding and UI
+Modern Next.js application.
+- **Theme**: Custom "Physics Wallah" Red/Black/Gold theme.
+- **UI**: Interactive session view with real-time transcription and controls.
 
 [→ Frontend Documentation](./frontend/README.md)
 

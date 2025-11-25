@@ -20,10 +20,10 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Active Recall',
-  pageTitle: 'Active Recall Coach',
+  companyName: 'Physics Wallah AI',
+  pageTitle: 'PW AI Coach',
   pageDescription:
-    'Your personal tutor for mastering concepts through active recall. Learn, Quiz, and Teach-Back.',
+    'Your personal AI tutor for mastering concepts. Learn, Quiz, and Teach-Back with the power of Alakh Sir\'s vision.',
 
   supportsChatInput: true,
   supportsVideoInput: true,
@@ -31,10 +31,10 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   isPreConnectBufferEnabled: true,
 
   logo: '/logo.svg',
-  accent: '#DC2626', // Red-600
+  accent: '#D81F26', // PW Red
   logoDark: '/logo.svg',
-  accentDark: '#DC2626', // Red-600
-  startButtonText: 'Start Learning Session',
+  accentDark: '#D81F26', // PW Red
+  startButtonText: 'Start Learning',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,
