@@ -9,10 +9,9 @@ load_dotenv(dotenv_path=env_path)
 
 import json
 import traceback
-import time
-import asyncio
 from datetime import datetime
-from typing import Annotated, List, Dict, Any, Optional
+from typing import Annotated, Dict, Any
+
 from livekit.agents import (
     Agent,
     AgentSession,
@@ -23,7 +22,6 @@ from livekit.agents import (
     WorkerOptions,
     cli,
     metrics,
-    tokenize,
     function_tool,
     RunContext,
     llm,
@@ -31,10 +29,10 @@ from livekit.agents import (
 from livekit.plugins import openai, silero, google, deepgram, noise_cancellation
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
-logger = logging.getLogger("agent")
+logger = logging.getLogger("pw-sdr-agent")
 
 
-class RelianceSDRAgent(Agent):
+class PhysicsWallahSDRAgent(Agent):
     def __init__(self) -> None:
         # Load content
         self.content = self._load_content()
@@ -46,7 +44,7 @@ class RelianceSDRAgent(Agent):
 
     def _load_content(self) -> Dict[str, Any]:
         try:
-            content_path = Path(__file__).resolve().parent.parent.parent / "shared-data" / "reliance_content.json"
+            content_path = Path(__file__).resolve().parent.parent.parent / "shared-data" / "pw_content.json"
             with open(content_path, "r") as f:
                 return json.load(f)
         except Exception as e:
@@ -62,35 +60,36 @@ class RelianceSDRAgent(Agent):
         faqs_str = "\n".join([f"Q: {f['question']}\nA: {f['answer']}" for f in faqs])
         
         return f"""
-        You are an elite Sales Development Representative (SDR) for the **{company_info.get('name', 'Reliance Group')}**.
+        You are a friendly and energetic Sales Development Representative (SDR) for **{company_info.get('name', 'Physics Wallah')}**.
         
         **COMPANY OVERVIEW:**
         {company_info.get('description')}
         Mission: {company_info.get('mission')}
         
-        **KEY BUSINESS VERTICALS:**
+        **KEY OFFERINGS:**
         {verticals_str}
         
         **FAQ KNOWLEDGE BASE:**
         {faqs_str}
         
         **YOUR GOAL:**
-        1.  **Qualify the Lead:** engagingly ask for their Name, Company, Role, and which Vertical/Product they are interested in.
-        2.  **Answer Questions:** Use the FAQ and Vertical info to answer questions accurately. If you don't know, admit it and offer to connect them with a specialist.
-        3.  **Close:** Once you have their details and have answered their questions, summarize their interest and end the call professionally.
+        1.  **Qualify the Lead:** Warmly engage with the student or parent. Find out who they are (Student/Parent), their Class/Grade, and what Exam they are targeting (JEE, NEET, Boards, etc.).
+        2.  **Answer Questions:** Use the FAQ and Offerings info to answer questions about courses, pricing (mention affordability), and faculties.
+        3.  **Close:** Once you have their details and have answered their questions, summarize their interest and end the call with high energy ("Padhai Karte Raho!", "All the best!").
         
         **YOUR PERSONA:**
-        - **Tone:** Professional, warm, respectful, and helpful (Corporate Indian English accent preferred).
-        - **Greeting:** "Namaste! Welcome to Reliance Group. I am your AI Assistant. How may I help you explore our digital services and energy solutions today?"
+        - **Tone:** Professional, Warm, Efficient, and Encouraging. You are an expert Admission Counselor.
+        - **Greeting:** "Hello! Welcome to Physics Wallah's Admission Cell. I am your AI Counselor. I can help you find the perfect course and batch for your goals. To get started, may I know your name?"
         - **Behavior:**
-          - Be concise. Voice interfaces require shorter answers.
-          - Don't interrogate. Ask for details naturally during the conversation.
-          - If they ask about "pricing", explain that it varies by vertical and you can connect them to the right sales team.
+          - Be concise and professional.
+          - Focus on gathering requirements (Class, Exam, Goals) to suggest the best batch.
+          - Provide clear, accurate information about fee structures and scholarships.
+          - Guide the user towards enrollment.
         
         **LEAD CAPTURE:**
-        You must collect: Name, Company, Email, Role, Interest, Timeline.
+        You must collect: Name, Role (Student/Parent), Class/Grade, Target Exam, Email, Timeline (When they want to join).
         When the user indicates they are done (e.g., "That's all", "Thanks"), or after you have collected all info:
-        1.  Verbally summarize what you have recorded.
+        1.  Verbally summarize what you have recorded (e.g., "Thank you [Name]. I have noted your interest in [Exam] for Class [Class]...").
         2.  Call the `save_lead` tool.
         """
 
@@ -99,22 +98,28 @@ class RelianceSDRAgent(Agent):
         self,
         ctx: RunContext,
         name: Annotated[str, "Full Name"],
-        company: Annotated[str, "Company Name"],
+        role: Annotated[str, "Role (Student or Parent)"],
+        grade: Annotated[str, "Class or Grade (e.g., 11th, 12th, Dropper)"],
+        target_exam: Annotated[str, "Target Exam (e.g., JEE, NEET, UPSC)"],
         email: Annotated[str, "Email Address"],
-        interest: Annotated[str, "Area of interest (e.g., Technology, Steel, Motors)"],
-        role: Annotated[str, "Job Role"] = "Not specified",
-        timeline: Annotated[str, "Timeline"] = "Not specified",
+        timeline: Annotated[str, "When they plan to join (e.g., Immediately, Next Year)"] = "Not specified",
+        use_case: Annotated[str, "Specific goal or use case"] = "Exam Preparation",
+        team_size: Annotated[str, "Study group size or 'Individual'"] = "Individual",
+        company: Annotated[str, "School or College Name"] = "Not specified",
     ):
         """Save the lead's information to the database. Call this at the end of the conversation."""
         try:
             lead_data = {
                 "timestamp": datetime.now().isoformat(),
                 "name": name,
-                "company": company,
-                "email": email,
                 "role": role,
-                "interest": interest,
-                "timeline": timeline
+                "grade": grade,
+                "target_exam": target_exam,
+                "email": email,
+                "timeline": timeline,
+                "use_case": use_case,
+                "team_size": team_size,
+                "company": company # Mapping School/College to company field for consistency with prompt requirements
             }
             
             # Load existing leads
@@ -132,15 +137,20 @@ class RelianceSDRAgent(Agent):
             with open(self.leads_path, "w") as f:
                 json.dump(leads, f, indent=2)
                 
-            logger.info(f"Lead saved: {name} from {company}")
-            return "Lead saved successfully. Thank you for your interest in Reliance Group."
+            logger.info(f"Lead saved: {name}, {target_exam}")
+            return "Lead saved successfully. All the best for your preparation!"
             
         except Exception as e:
             logger.error(f"Error saving lead: {e}")
             return "There was an error saving your details, but I have noted them down."
 
 def prewarm(proc: JobProcess):
+    """Preload models to minimize first-call latency"""
+    # Preload VAD model
     proc.userdata["vad"] = silero.VAD.load()
+    
+    # Preload STT model to reduce initialization time
+    proc.userdata["stt"] = deepgram.STT(model="nova-3")
 
 
 async def entrypoint(ctx: JobContext):
@@ -150,15 +160,17 @@ async def entrypoint(ctx: JobContext):
         }
 
         # Initialize the agent
-        agent = RelianceSDRAgent()
+        agent = PhysicsWallahSDRAgent()
 
         session = AgentSession(
-            stt=deepgram.STT(model="nova-3"),
+            stt=ctx.proc.userdata.get("stt") or deepgram.STT(model="nova-3"),
             llm=google.LLM(
                 model="gemini-2.5-flash",
             ),
-            # Use Deepgram TTS as OpenAI key is missing and Murf is unavailable
-            tts=deepgram.TTS(model="aura-helios-en"), 
+            # Use Deepgram Aura TTS (reliable fallback)
+            tts=deepgram.TTS(
+                model="aura-helios-en",  # Professional male voice
+            ), 
             turn_detection=MultilingualModel(),
             vad=ctx.proc.userdata["vad"],
             preemptive_generation=True,

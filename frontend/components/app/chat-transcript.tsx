@@ -61,7 +61,7 @@ export function ChatTranscript({
   return (
     <AnimatePresence>
       {!hidden && (
-        <MotionContainer {...CONTAINER_MOTION_PROPS} {...props}>
+        <MotionContainer {...(CONTAINER_MOTION_PROPS as any)} {...props}>
           {messages.map(({ id, timestamp, from, message, editTimestamp }: ReceivedChatMessage) => {
             const locale = navigator?.language ?? 'en-US';
             const messageOrigin = from?.isLocal ? 'local' : 'remote';

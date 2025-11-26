@@ -41,7 +41,7 @@ export function PreConnectMessage({ className, messages = [] }: PreConnectMessag
     <AnimatePresence>
       {messages.length === 0 && (
         <MotionMessage
-          {...VIEW_MOTION_PROPS}
+          {...(VIEW_MOTION_PROPS as any)}
           aria-hidden={messages.length > 0}
           className={cn('pointer-events-none text-center', className)}
         >

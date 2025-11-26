@@ -53,7 +53,7 @@ export function ViewController() {
       {isSessionActive && (
         <MotionSessionView
           key="session-view"
-          {...VIEW_MOTION_PROPS}
+          {...(VIEW_MOTION_PROPS as any)}
           appConfig={appConfig}
           onAnimationComplete={handleAnimationComplete}
         />
