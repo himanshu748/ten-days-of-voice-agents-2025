@@ -20,10 +20,10 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Physics Wallah AI',
-  pageTitle: 'PW AI Coach',
+  companyName: 'Reliance Group',
+  pageTitle: 'Reliance Group AI Assistant',
   pageDescription:
-    'Your personal AI tutor for mastering concepts. Learn, Quiz, and Teach-Back with the power of Alakh Sir\'s vision.',
+    'Growth is Life. Explore our digital services, retail, and energy solutions.',
 
   supportsChatInput: true,
   supportsVideoInput: true,
@@ -31,10 +31,10 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   isPreConnectBufferEnabled: true,
 
   logo: '/logo.svg',
-  accent: '#D81F26', // PW Red
+  accent: '#004b8d', // Reliance Blue
   logoDark: '/logo.svg',
-  accentDark: '#D81F26', // PW Red
-  startButtonText: 'Start Learning',
+  accentDark: '#004b8d', // Reliance Blue
+  startButtonText: 'Connect with Reliance SDR',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,

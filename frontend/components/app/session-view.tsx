@@ -125,27 +125,27 @@ export const SessionView = ({
   }, [room]);
 
   return (
-    <section className="bg-[#0a0a0a] relative z-10 h-full w-full overflow-hidden" {...props}>
-      {/* Enhanced Background with Floating Shapes - Premium PW Theme */}
+    <section className="bg-[#F5F9FC] relative z-10 h-full w-full overflow-hidden" {...props}>
+      {/* Enhanced Background with Floating Shapes - Tata Professional Theme */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: `radial-gradient(circle, #DC2626 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, #005CA9 1px, transparent 1px)`,
           backgroundSize: '30px 30px',
         }}
       />
-      <div className="from-red-900/20 animate-float pointer-events-none absolute top-[-10%] right-[-5%] h-[600px] w-[600px] rounded-full bg-gradient-to-br to-transparent opacity-40 blur-[120px]" />
-      <div className="from-yellow-700/10 animate-float-delayed pointer-events-none absolute bottom-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-gradient-to-tl to-transparent opacity-40 blur-[100px]" />
+      <div className="from-blue-200/40 animate-float pointer-events-none absolute top-[-10%] right-[-5%] h-[600px] w-[600px] rounded-full bg-gradient-to-br to-transparent opacity-50 blur-[120px]" />
+      <div className="from-teal-200/30 animate-float-delayed pointer-events-none absolute bottom-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-gradient-to-tl to-transparent opacity-50 blur-[100px]" />
 
       {/* Enhanced Branding Header */}
       <div className="group absolute top-4 left-4 z-50">
-        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/60 px-5 py-2.5 shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-red-900/20 hover:border-red-500/30">
+        <div className="flex items-center gap-3 rounded-full border border-blue-100 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-md hover:border-blue-200">
           <div className="relative">
-            <span className="text-2xl">⚛️</span>
-            <div className="bg-red-500/20 absolute inset-0 rounded-full opacity-0 blur-md transition-opacity group-hover:opacity-50" />
+            <span className="text-2xl">🔷</span>
+            <div className="bg-blue-500/20 absolute inset-0 rounded-full opacity-0 blur-md transition-opacity group-hover:opacity-50" />
           </div>
-          <div className="bg-gradient-to-r from-white via-neutral-200 to-white bg-[length:200%_auto] animate-gradient bg-clip-text text-xl font-bold tracking-tight text-transparent group-hover:from-red-400 group-hover:via-yellow-400 group-hover:to-red-400 transition-all">
-            Physics Wallah AI
+          <div className="bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 bg-[length:200%_auto] animate-gradient bg-clip-text text-xl font-bold tracking-tight text-transparent group-hover:from-blue-600 group-hover:via-teal-500 group-hover:to-blue-600 transition-all">
+            Tata Group AI
           </div>
         </div>
       </div>

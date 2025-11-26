@@ -89,7 +89,7 @@ export function AgentControlBar({
     <div
       aria-label="Voice assistant controls"
       className={cn(
-        'bg-neutral-900/90 border border-white/10 backdrop-blur-xl flex flex-col rounded-full p-2 shadow-2xl',
+        'bg-white/90 border border-blue-100 backdrop-blur-xl flex flex-col rounded-full p-2 shadow-xl',
         className
       )}
       {...props}
@@ -103,66 +103,66 @@ export function AgentControlBar({
         />
       )}
 
-      <div className="flex items-center gap-2">
-        <div className="flex grow items-center gap-2 justify-center">
-          {/* Toggle Microphone */}
-          {visibleControls.microphone && (
-            <TrackSelector
-              kind="audioinput"
-              aria-label="Toggle microphone"
-              source={Track.Source.Microphone}
-              pressed={microphoneToggle.enabled}
-              disabled={microphoneToggle.pending}
-              audioTrackRef={micTrackRef}
-              onPressedChange={microphoneToggle.toggle}
-              onMediaDeviceError={handleMicrophoneDeviceSelectError}
-              onActiveDeviceChange={handleAudioDeviceChange}
-              className="[&_button]:h-12 [&_button]:w-12 [&_button]:rounded-full [&_button]:bg-neutral-800 [&_button]:text-neutral-400 [&_button]:border [&_button]:border-white/5 [&_button:hover]:bg-neutral-700 [&_button:hover]:text-white [&_button[data-state=on]]:bg-red-600 [&_button[data-state=on]]:text-white [&_button[data-state=on]]:border-red-500 [&_button[data-state=on]]:shadow-[0_0_15px_rgba(220,38,38,0.5)]"
-            />
-          )}
+      <div className="flex items-center gap-3">
+        {/* Toggle Microphone */}
+        {visibleControls.microphone && (
+          <TrackSelector
+            kind="audioinput"
+            aria-label="Toggle microphone"
+            source={Track.Source.Microphone}
+            pressed={microphoneToggle.enabled}
+            disabled={microphoneToggle.pending}
+            audioTrackRef={micTrackRef}
+            onPressedChange={microphoneToggle.toggle}
+            onMediaDeviceError={handleMicrophoneDeviceSelectError}
+            onActiveDeviceChange={handleAudioDeviceChange}
+            className="[&_button]:h-12 [&_button]:w-12 [&_button]:rounded-full [&_button]:bg-white [&_button]:text-slate-500 [&_button]:border [&_button]:border-slate-200 [&_button:hover]:bg-blue-50 [&_button:hover]:text-blue-600 [&_button[data-state=on]]:bg-blue-600 [&_button[data-state=on]]:text-white [&_button[data-state=on]]:border-blue-500 [&_button[data-state=on]]:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+          />
+        )}
 
-          {/* Toggle Camera */}
-          {visibleControls.camera && (
-            <TrackSelector
-              kind="videoinput"
-              aria-label="Toggle camera"
-              source={Track.Source.Camera}
-              pressed={cameraToggle.enabled}
-              pending={cameraToggle.pending}
-              disabled={cameraToggle.pending}
-              onPressedChange={cameraToggle.toggle}
-              onMediaDeviceError={handleCameraDeviceSelectError}
-              onActiveDeviceChange={handleVideoDeviceChange}
-              className="[&_button]:h-12 [&_button]:w-12 [&_button]:rounded-full [&_button]:bg-neutral-800 [&_button]:text-neutral-400 [&_button]:border [&_button]:border-white/5 [&_button:hover]:bg-neutral-700 [&_button:hover]:text-white [&_button[data-state=on]]:bg-red-600 [&_button[data-state=on]]:text-white [&_button[data-state=on]]:border-red-500 [&_button[data-state=on]]:shadow-[0_0_15px_rgba(220,38,38,0.5)]"
-            />
-          )}
+        {/* Toggle Camera */}
+        {visibleControls.camera && (
+          <TrackSelector
+            kind="videoinput"
+            aria-label="Toggle camera"
+            source={Track.Source.Camera}
+            pressed={cameraToggle.enabled}
+            pending={cameraToggle.pending}
+            disabled={cameraToggle.pending}
+            onPressedChange={cameraToggle.toggle}
+            onMediaDeviceError={handleCameraDeviceSelectError}
+            onActiveDeviceChange={handleVideoDeviceChange}
+            className="[&_button]:h-12 [&_button]:w-12 [&_button]:rounded-full [&_button]:bg-white [&_button]:text-slate-500 [&_button]:border [&_button]:border-slate-200 [&_button:hover]:bg-blue-50 [&_button:hover]:text-blue-600 [&_button[data-state=on]]:bg-blue-600 [&_button[data-state=on]]:text-white [&_button[data-state=on]]:border-blue-500 [&_button[data-state=on]]:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+          />
+        )}
 
-          {/* Toggle Screen Share */}
-          {visibleControls.screenShare && (
-            <TrackToggle
-              size="icon"
-              variant="secondary"
-              aria-label="Toggle screen share"
-              source={Track.Source.ScreenShare}
-              pressed={screenShareToggle.enabled}
-              disabled={screenShareToggle.pending}
-              onPressedChange={screenShareToggle.toggle}
-              className="h-12 w-12 rounded-full bg-neutral-800 text-neutral-400 border border-white/5 hover:bg-neutral-700 hover:text-white data-[state=on]:bg-red-600 data-[state=on]:text-white data-[state=on]:border-red-500 data-[state=on]:shadow-[0_0_15px_rgba(220,38,38,0.5)]"
-            />
-          )}
+        {/* Toggle Screen Share */}
+        {visibleControls.screenShare && (
+          <TrackToggle
+            size="icon"
+            variant="secondary"
+            aria-label="Toggle screen share"
+            source={Track.Source.ScreenShare}
+            pressed={screenShareToggle.enabled}
+            disabled={screenShareToggle.pending}
+            onPressedChange={screenShareToggle.toggle}
+            className="h-12 w-12 rounded-full bg-white text-slate-500 border border-slate-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all data-[state=on]:bg-blue-600 data-[state=on]:text-white data-[state=on]:border-blue-500 data-[state=on]:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+          />
+        )}
 
-          {/* Toggle Transcript */}
+        {/* Toggle Transcript */}
+        {visibleControls.chat && (
           <Toggle
             size="icon"
             variant="secondary"
             aria-label="Toggle transcript"
             pressed={chatOpen}
             onPressedChange={handleToggleTranscript}
-            className="h-12 w-12 rounded-full bg-neutral-800 text-neutral-400 border border-white/5 hover:bg-neutral-700 hover:text-white data-[state=on]:bg-red-600 data-[state=on]:text-white data-[state=on]:border-red-500 data-[state=on]:shadow-[0_0_15px_rgba(220,38,38,0.5)]"
+            className="h-12 w-12 rounded-full bg-white text-slate-500 border border-slate-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all data-[state=on]:bg-blue-600 data-[state=on]:text-white data-[state=on]:border-blue-500 data-[state=on]:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
           >
             <ChatTextIcon weight="bold" />
           </Toggle>
-        </div>
+        )}
 
         {/* Disconnect */}
         {visibleControls.leave && (
@@ -170,10 +170,10 @@ export function AgentControlBar({
             variant="destructive"
             onClick={handleDisconnect}
             disabled={!isSessionActive}
-            className="h-12 px-6 rounded-full font-bold tracking-wider bg-red-950/50 text-red-500 border border-red-900/50 hover:bg-red-900/80 hover:text-white hover:border-red-500 transition-all"
+            className="h-12 px-6 rounded-full font-bold tracking-wider bg-red-50 text-red-600 border border-red-100 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all shadow-sm"
           >
             <PhoneDisconnectIcon weight="bold" className="mr-2" />
-            <span className="hidden md:inline">END SESSION</span>
+            <span className="hidden md:inline">END CALL</span>
             <span className="inline md:hidden">END</span>
           </Button>
         )}
