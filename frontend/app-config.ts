@@ -20,8 +20,8 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'SecureBank',
-  pageTitle: 'SecureBank Fraud Alert',
+  companyName: 'Airtel Payments Bank',
+  pageTitle: 'Airtel Payments Bank Fraud Alert',
   pageDescription:
     'Your security is our priority. 24/7 Fraud Detection and Prevention System.',
 
@@ -31,10 +31,10 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   isPreConnectBufferEnabled: true,
 
   logo: '/logo.svg',
-  accent: '#0f172a', // Slate 900
+  accent: '#E40000', // Airtel Red
   logoDark: '/logo.svg',
-  accentDark: '#38bdf8', // Sky 400
-  startButtonText: 'Connect to Fraud Dept',
+  accentDark: '#ff4d4d', // Lighter Red for dark mode
+  startButtonText: 'Connect to Bank Support',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,

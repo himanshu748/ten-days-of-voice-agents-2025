@@ -17,8 +17,8 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
 
-  --primary: #0ea5e9;
-  /* Sky 500 */
+  --primary: #E40000;
+  /* Airtel Red */
   --primary-foreground: 210 40% 98%;
 
   --secondary: 210 40% 96.1%;
@@ -35,9 +35,9 @@
 
   --border: 214 32% 91%;
   --input: 214 32% 91%;
-  --ring: #0ea5e9;
+  --ring: #E40000;
 
-  --chart-1: #0ea5e9;
+  --chart-1: #E40000;
   --chart-2: 210 9% 34%;
   --chart-3: 199 89% 48%;
   --chart-4: 43 96% 58%;
@@ -45,12 +45,12 @@
 
   --sidebar: 0 0% 100%;
   --sidebar-foreground: 240 5.3% 26.1%;
-  --sidebar-primary: #0ea5e9;
+  --sidebar-primary: #E40000;
   --sidebar-primary-foreground: 0 0% 98%;
   --sidebar-accent: 240 4.8% 95.9%;
-  --sidebar-accent-foreground: #0ea5e9;
+  --sidebar-accent-foreground: #E40000;
   --sidebar-border: 220 13% 91%;
-  --sidebar-ring: #0ea5e9;
+  --sidebar-ring: #E40000;
 }
 
 .dark {
@@ -63,7 +63,7 @@
   --popover: 240 10% 3.9%;
   --popover-foreground: 0 0% 98%;
 
-  --primary: #2563EB;
+  --primary: #E40000;
   --primary-foreground: 0 0% 98%;
 
   --secondary: 240 3.7% 15.9%;
@@ -80,9 +80,9 @@
 
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
-  --ring: #2563EB;
+  --ring: #E40000;
 
-  --chart-1: #2563EB;
+  --chart-1: #E40000;
   --chart-2: 210 9% 34%;
   --chart-3: 199 89% 48%;
   --chart-4: 43 96% 58%;
@@ -90,12 +90,12 @@
 
   --sidebar: 240 5.9% 10%;
   --sidebar-foreground: 240 4.8% 95.9%;
-  --sidebar-primary: #2563EB;
+  --sidebar-primary: #E40000;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 240 3.7% 15.9%;
   --sidebar-accent-foreground: 240 4.8% 95.9%;
   --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: #2563EB;
+  --sidebar-ring: #E40000;
 }
 
 @theme inline {

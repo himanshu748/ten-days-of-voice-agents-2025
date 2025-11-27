@@ -89,7 +89,7 @@ export function AgentControlBar({
     <div
       aria-label="Voice assistant controls"
       className={cn(
-        'bg-white/90 border border-blue-100 backdrop-blur-xl flex flex-col rounded-full p-2 shadow-xl',
+        'bg-white/90 border border-red-100 backdrop-blur-xl flex flex-col rounded-full p-2 shadow-xl',
         className
       )}
       {...props}
@@ -116,7 +116,7 @@ export function AgentControlBar({
             onPressedChange={microphoneToggle.toggle}
             onMediaDeviceError={handleMicrophoneDeviceSelectError}
             onActiveDeviceChange={handleAudioDeviceChange}
-            className="[&_button]:h-12 [&_button]:w-12 [&_button]:rounded-full [&_button]:bg-white [&_button]:text-slate-500 [&_button]:border [&_button]:border-slate-200 [&_button:hover]:bg-blue-50 [&_button:hover]:text-blue-600 [&_button[data-state=on]]:bg-blue-600 [&_button[data-state=on]]:text-white [&_button[data-state=on]]:border-blue-500 [&_button[data-state=on]]:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+            className="[&_button]:h-12 [&_button]:w-12 [&_button]:rounded-full [&_button]:bg-white [&_button]:text-slate-500 [&_button]:border [&_button]:border-slate-200 [&_button:hover]:bg-red-50 [&_button:hover]:text-red-600 [&_button[data-state=on]]:bg-red-600 [&_button[data-state=on]]:text-white [&_button[data-state=on]]:border-red-500 [&_button[data-state=on]]:shadow-[0_0_15px_rgba(220,38,38,0.4)]"
           />
         )}
 
@@ -132,7 +132,7 @@ export function AgentControlBar({
             onPressedChange={cameraToggle.toggle}
             onMediaDeviceError={handleCameraDeviceSelectError}
             onActiveDeviceChange={handleVideoDeviceChange}
-            className="[&_button]:h-12 [&_button]:w-12 [&_button]:rounded-full [&_button]:bg-white [&_button]:text-slate-500 [&_button]:border [&_button]:border-slate-200 [&_button:hover]:bg-blue-50 [&_button:hover]:text-blue-600 [&_button[data-state=on]]:bg-blue-600 [&_button[data-state=on]]:text-white [&_button[data-state=on]]:border-blue-500 [&_button[data-state=on]]:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+            className="[&_button]:h-12 [&_button]:w-12 [&_button]:rounded-full [&_button]:bg-white [&_button]:text-slate-500 [&_button]:border [&_button]:border-slate-200 [&_button:hover]:bg-red-50 [&_button:hover]:text-red-600 [&_button[data-state=on]]:bg-red-600 [&_button[data-state=on]]:text-white [&_button[data-state=on]]:border-red-500 [&_button[data-state=on]]:shadow-[0_0_15px_rgba(220,38,38,0.4)]"
           />
         )}
 
@@ -146,7 +146,7 @@ export function AgentControlBar({
             pressed={screenShareToggle.enabled}
             disabled={screenShareToggle.pending}
             onPressedChange={screenShareToggle.toggle}
-            className="h-12 w-12 rounded-full bg-white text-slate-500 border border-slate-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all data-[state=on]:bg-blue-600 data-[state=on]:text-white data-[state=on]:border-blue-500 data-[state=on]:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+            className="h-12 w-12 rounded-full bg-white text-slate-500 border border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all data-[state=on]:bg-red-600 data-[state=on]:text-white data-[state=on]:border-red-500 data-[state=on]:shadow-[0_0_15px_rgba(220,38,38,0.4)]"
           />
         )}
 
@@ -158,7 +158,7 @@ export function AgentControlBar({
             aria-label="Toggle transcript"
             pressed={chatOpen}
             onPressedChange={handleToggleTranscript}
-            className="h-12 w-12 rounded-full bg-white text-slate-500 border border-slate-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all data-[state=on]:bg-blue-600 data-[state=on]:text-white data-[state=on]:border-blue-500 data-[state=on]:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+            className="h-12 w-12 rounded-full bg-white text-slate-500 border border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all data-[state=on]:bg-red-600 data-[state=on]:text-white data-[state=on]:border-red-500 data-[state=on]:shadow-[0_0_15px_rgba(220,38,38,0.4)]"
           >
             <ChatTextIcon weight="bold" />
           </Toggle>

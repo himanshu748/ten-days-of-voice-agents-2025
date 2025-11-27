@@ -24,7 +24,7 @@ from livekit.agents import (
     RunContext,
     llm,
 )
-from livekit.plugins import silero, google, deepgram, noise_cancellation
+from livekit.plugins import silero, google, deepgram, noise_cancellation, murf
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 try:
     from src import database
@@ -42,7 +42,7 @@ class FraudAlertAgent(Agent):
 
     def _get_instructions(self) -> str:
         return """
-        You are a **Fraud Detection Representative** for **SecureBank**.
+        You are a **Fraud Detection Representative** for **Airtel Payments Bank**.
         
         **YOUR GOAL:**
         1.  **Identify the User:** Ask for the user's username to pull up their file.
@@ -126,7 +126,14 @@ async def entrypoint(ctx: JobContext):
         session = AgentSession(
             stt=ctx.proc.userdata.get("stt") or deepgram.STT(model="nova-3"),
             llm=google.LLM(model="gemini-2.5-flash"),
-            tts=deepgram.TTS(model="aura-helios-en"),
+            tts=murf.TTS(
+                voice="Matthew",
+                style="Conversation",
+                speed=5,
+                pitch=0,
+                model="FALCON",
+                sample_rate=24000,
+            ),
             turn_detection=MultilingualModel(),
             vad=ctx.proc.userdata["vad"],
             preemptive_generation=True,
@@ -153,10 +160,11 @@ async def entrypoint(ctx: JobContext):
             ),
         )
         
-        # Initial greeting
-        await session.say("Hello, this is the Fraud Department at SecureBank. I'm calling about a suspicious transaction. Could you please verify your username so I can pull up your file?", add_to_chat_ctx=True)
-
         await ctx.connect()
+        # Initial greeting
+        await session.say("Hello, this is the Fraud Department at Airtel Payments Bank. I'm calling about a suspicious transaction. Could you please verify your username so I can pull up your file?", add_to_chat_ctx=True)
+
+
     
     except Exception as e:
         logger.error(f"Error in entrypoint: {e}")

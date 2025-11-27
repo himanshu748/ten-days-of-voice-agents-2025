@@ -14,11 +14,11 @@ interface WelcomeViewProps {
 
 export function WelcomeView({ onStart }: WelcomeViewProps) {
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden overflow-y-auto bg-slate-950 font-sans text-white selection:bg-blue-500/30">
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden overflow-y-auto bg-slate-950 font-sans text-white selection:bg-red-500/30">
       {/* Dynamic Background Elements - SecureBank Theme */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute top-[-20%] left-[-10%] h-[800px] w-[800px] animate-pulse rounded-full bg-gradient-to-br from-blue-900/40 to-transparent blur-[120px]" />
-        <div className="absolute right-[-10%] bottom-[-20%] h-[800px] w-[800px] animate-pulse rounded-full bg-gradient-to-tl from-cyan-900/30 to-transparent blur-[100px] delay-1000" />
+        <div className="absolute top-[-20%] left-[-10%] h-[800px] w-[800px] animate-pulse rounded-full bg-gradient-to-br from-red-600/40 to-transparent blur-[120px]" />
+        <div className="absolute right-[-10%] bottom-[-20%] h-[800px] w-[800px] animate-pulse rounded-full bg-gradient-to-tl from-orange-600/30 to-transparent blur-[100px] delay-1000" />
       </div>
 
       {/* Sophisticated Grid Pattern */}
@@ -33,16 +33,16 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           className="mb-12"
         >
           {/* Security Badge */}
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-900/20 px-5 py-2 shadow-sm backdrop-blur-xl">
-            <ShieldCheck weight="fill" className="h-4 w-4 animate-pulse text-blue-400" />
-            <span className="text-xs font-bold tracking-widest text-blue-400 uppercase">
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-900/20 px-5 py-2 shadow-sm backdrop-blur-xl">
+            <ShieldCheck weight="fill" className="h-4 w-4 animate-pulse text-red-500" />
+            <span className="text-xs font-bold tracking-widest text-red-500 uppercase">
               Fraud Protection Active
             </span>
           </div>
 
           <h1 className="mb-8 text-6xl font-extrabold tracking-tight text-white drop-shadow-sm md:text-8xl">
-            SecureBank <br />
-            <span className="animate-gradient bg-300% bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
+            Airtel Payments Bank <br />
+            <span className="animate-gradient bg-300% bg-gradient-to-r from-red-500 via-orange-500 to-red-600 bg-clip-text text-transparent">
               Fraud Alert
             </span>
           </h1>
@@ -67,27 +67,27 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
               title: 'Suspicious Activity',
               desc: "Unusual transaction pattern detected.",
               gradient: 'from-orange-500/20 to-red-600/10',
-              iconColor: 'text-orange-400',
+              iconColor: 'text-orange-500',
             },
             {
               icon: LockKey,
               title: 'Secure Verification',
               desc: 'Identity confirmation via voice security.',
-              gradient: 'from-blue-500/20 to-blue-600/10',
-              iconColor: 'text-blue-400',
+              gradient: 'from-red-500/20 to-red-600/10',
+              iconColor: 'text-red-500',
             },
             {
               icon: PhoneCall,
               title: 'Instant Resolution',
-              desc: 'Speak directly with our Fraud Dept AI.',
-              gradient: 'from-cyan-500/20 to-cyan-600/10',
-              iconColor: 'text-cyan-400',
+              desc: 'Speak directly with our Bank Support AI.',
+              gradient: 'from-red-500/20 to-orange-600/10',
+              iconColor: 'text-red-400',
             },
           ].map((feature, idx) => (
             <motion.div
               key={idx}
               whileHover={{ y: -8 }}
-              className="group relative flex flex-col items-center rounded-3xl border border-white/10 bg-white/5 p-8 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-blue-500/50 hover:shadow-blue-900/20"
+              className="group relative flex flex-col items-center rounded-3xl border border-white/10 bg-white/5 p-8 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-red-500/50 hover:shadow-red-900/20"
             >
               <div
                 className={`absolute inset-0 rounded-3xl bg-gradient-to-b ${feature.gradient} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
@@ -110,11 +110,11 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
         >
           <Button
             onClick={onStart}
-            className="group relative overflow-hidden rounded-full border-none bg-blue-600 px-10 py-8 text-lg font-bold text-white ring-4 ring-blue-900/50 transition-all hover:scale-105 hover:shadow-[0_0_30px_-5px_rgba(37,99,235,0.6)]"
+            className="group relative overflow-hidden rounded-full border-none bg-red-600 px-10 py-8 text-lg font-bold text-white ring-4 ring-red-900/50 transition-all hover:scale-105 hover:shadow-[0_0_30px_-5px_rgba(220,38,38,0.6)]"
           >
-            <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 bg-[length:200%_100%]" />
+            <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-red-500 via-orange-500 to-red-600 bg-[length:200%_100%]" />
             <div className="relative flex items-center gap-3">
-              <span>Connect to Fraud Dept</span>
+              <span>Connect to Bank Support</span>
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </div>
           </Button>
@@ -130,7 +130,7 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
       >
         <div className="h-px w-12 bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
         <span className="text-[10px] font-medium tracking-[0.2em] text-slate-500 uppercase">
-          Powered by LiveKit & SecureBank
+          Powered by LiveKit & Airtel Payments Bank
         </span>
       </motion.div>
     </div>
