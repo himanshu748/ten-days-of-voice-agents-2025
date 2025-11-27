@@ -20,21 +20,21 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Reliance Group',
-  pageTitle: 'Reliance Group AI Assistant',
+  companyName: 'SecureBank',
+  pageTitle: 'SecureBank Fraud Alert',
   pageDescription:
-    'Growth is Life. Explore our digital services, retail, and energy solutions.',
+    'Your security is our priority. 24/7 Fraud Detection and Prevention System.',
 
   supportsChatInput: true,
-  supportsVideoInput: true,
-  supportsScreenShare: true,
+  supportsVideoInput: false, // Fraud alerts usually voice-only
+  supportsScreenShare: false,
   isPreConnectBufferEnabled: true,
 
   logo: '/logo.svg',
-  accent: '#004b8d', // Reliance Blue
+  accent: '#0f172a', // Slate 900
   logoDark: '/logo.svg',
-  accentDark: '#004b8d', // Reliance Blue
-  startButtonText: 'Connect with Reliance SDR',
+  accentDark: '#38bdf8', // Sky 400
+  startButtonText: 'Connect to Fraud Dept',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,

@@ -2,15 +2,13 @@ import logging
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+import json
+from datetime import datetime
+from typing import Annotated, Dict, Any, Optional
 
-# Load env vars BEFORE importing livekit to ensure they are picked up
+# Load env vars
 env_path = Path(__file__).parent.parent / ".env.local"
 load_dotenv(dotenv_path=env_path)
-
-import json
-import traceback
-from datetime import datetime
-from typing import Annotated, Dict, Any
 
 from livekit.agents import (
     Agent,
@@ -26,158 +24,116 @@ from livekit.agents import (
     RunContext,
     llm,
 )
-from livekit.plugins import openai, silero, google, deepgram, noise_cancellation
+from livekit.plugins import silero, google, deepgram, noise_cancellation
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
+try:
+    from src import database
+except ImportError:
+    import database
 
-logger = logging.getLogger("pw-sdr-agent")
+logger = logging.getLogger("fraud-agent")
 
-
-class PhysicsWallahSDRAgent(Agent):
+class FraudAlertAgent(Agent):
     def __init__(self) -> None:
-        # Load content
-        self.content = self._load_content()
-        self.leads_path = Path(__file__).resolve().parent.parent.parent / "shared-data" / "leads.json"
-        
         super().__init__(
             instructions=self._get_instructions(),
         )
-
-    def _load_content(self) -> Dict[str, Any]:
-        try:
-            content_path = Path(__file__).resolve().parent.parent.parent / "shared-data" / "pw_content.json"
-            with open(content_path, "r") as f:
-                return json.load(f)
-        except Exception as e:
-            logger.error(f"Error loading content: {e}")
-            return {}
+        self.current_case: Optional[Dict[str, Any]] = None
 
     def _get_instructions(self) -> str:
-        company_info = self.content.get("company_info", {})
-        verticals = self.content.get("verticals", [])
-        faqs = self.content.get("faqs", [])
-        
-        verticals_str = "\n".join([f"- {v['name']}: {v['description']}" for v in verticals])
-        faqs_str = "\n".join([f"Q: {f['question']}\nA: {f['answer']}" for f in faqs])
-        
-        return f"""
-        You are a friendly and energetic Sales Development Representative (SDR) for **{company_info.get('name', 'Physics Wallah')}**.
-        
-        **COMPANY OVERVIEW:**
-        {company_info.get('description')}
-        Mission: {company_info.get('mission')}
-        
-        **KEY OFFERINGS:**
-        {verticals_str}
-        
-        **FAQ KNOWLEDGE BASE:**
-        {faqs_str}
+        return """
+        You are a **Fraud Detection Representative** for **SecureBank**.
         
         **YOUR GOAL:**
-        1.  **Qualify the Lead:** Warmly engage with the student or parent. Find out who they are (Student/Parent), their Class/Grade, and what Exam they are targeting (JEE, NEET, Boards, etc.).
-        2.  **Answer Questions:** Use the FAQ and Offerings info to answer questions about courses, pricing (mention affordability), and faculties.
-        3.  **Close:** Once you have their details and have answered their questions, summarize their interest and end the call with high energy ("Padhai Karte Raho!", "All the best!").
+        1.  **Identify the User:** Ask for the user's username to pull up their file.
+        2.  **Verify Identity:** Once you have the file, ask the security question associated with the account. Verify the answer provided by the user matches the expected answer exactly (case-insensitive).
+        3.  **Review Transaction:** If verified, read out the suspicious transaction details (Amount, Merchant, City, Time).
+        4.  **Confirm Legitimacy:** Ask the user if they made this transaction.
+        5.  **Take Action:**
+            - If **YES** (User made it): Mark as SAFE.
+            - If **NO** (User didn't make it): Mark as FRAUDULENT and explain that the card is being blocked.
+        6.  **End Call:** Confirm the action taken and say goodbye.
+
+        **TONE:**
+        - Professional, Calm, Reassuring, and Efficient.
+        - Do NOT ask for full card numbers, PINs, or passwords.
         
-        **YOUR PERSONA:**
-        - **Tone:** Professional, Warm, Efficient, and Encouraging. You are an expert Admission Counselor.
-        - **Greeting:** "Hello! Welcome to Physics Wallah's Admission Cell. I am your AI Counselor. I can help you find the perfect course and batch for your goals. To get started, may I know your name?"
-        - **Behavior:**
-          - Be concise and professional.
-          - Focus on gathering requirements (Class, Exam, Goals) to suggest the best batch.
-          - Provide clear, accurate information about fee structures and scholarships.
-          - Guide the user towards enrollment.
-        
-        **LEAD CAPTURE:**
-        You must collect: Name, Role (Student/Parent), Class/Grade, Target Exam, Email, Timeline (When they want to join).
-        When the user indicates they are done (e.g., "That's all", "Thanks"), or after you have collected all info:
-        1.  Verbally summarize what you have recorded (e.g., "Thank you [Name]. I have noted your interest in [Exam] for Class [Class]...").
-        2.  Call the `save_lead` tool.
+        **TOOLS:**
+        - Use `lookup_user` to find the case.
+        - Use `update_case_status` to finalize the result.
         """
 
     @function_tool
-    async def save_lead(
+    async def lookup_user(
         self,
         ctx: RunContext,
-        name: Annotated[str, "Full Name"],
-        role: Annotated[str, "Role (Student or Parent)"],
-        grade: Annotated[str, "Class or Grade (e.g., 11th, 12th, Dropper)"],
-        target_exam: Annotated[str, "Target Exam (e.g., JEE, NEET, UPSC)"],
-        email: Annotated[str, "Email Address"],
-        timeline: Annotated[str, "When they plan to join (e.g., Immediately, Next Year)"] = "Not specified",
-        use_case: Annotated[str, "Specific goal or use case"] = "Exam Preparation",
-        team_size: Annotated[str, "Study group size or 'Individual'"] = "Individual",
-        company: Annotated[str, "School or College Name"] = "Not specified",
+        username: Annotated[str, "The username provided by the user"],
     ):
-        """Save the lead's information to the database. Call this at the end of the conversation."""
-        try:
-            lead_data = {
-                "timestamp": datetime.now().isoformat(),
-                "name": name,
-                "role": role,
-                "grade": grade,
-                "target_exam": target_exam,
-                "email": email,
-                "timeline": timeline,
-                "use_case": use_case,
-                "team_size": team_size,
-                "company": company # Mapping School/College to company field for consistency with prompt requirements
-            }
+        """Look up a fraud case by username."""
+        logger.info(f"Tool lookup_user called with: '{username}'")
+        
+        # Use fuzzy lookup to handle "janesmith" vs "jane_smith"
+        case = database.find_user_fuzzy(username)
+
+        if not case:
+            logger.warning(f"User not found: '{username}'")
+            return "User not found. Please ask the user to spell their username or try again. (Hint: valid users are john_doe, jane_smith, etc.)"
+        
+        logger.info(f"User found: {case['username']}")
+        self.current_case = case
+        
+        # Return details for the LLM to use
+        return f"""
+        Case Found:
+        - Username: {case['username']}
+        - Security Question: {case['security_question']}
+        - Expected Answer: {case['security_answer']}
+        - Transaction: {case['transaction_amount']} at {case['transaction_merchant']} in {case['transaction_city']} on {case['transaction_time']}
+        - Card Ending: {case['card_ending']}
+        
+        INSTRUCTIONS:
+        1. Ask the security question: "{case['security_question']}"
+        2. If they answer "{case['security_answer']}", proceed to describe the transaction.
+        3. If they fail, politely end the call.
+        """
+
+    @function_tool
+    async def update_case_status(
+        self,
+        ctx: RunContext,
+        status: Annotated[str, "The final status: 'confirmed_safe' or 'confirmed_fraud'"],
+        note: Annotated[str, "A brief note about the outcome (e.g., 'User confirmed transaction')"],
+    ):
+        """Update the fraud case status in the database."""
+        if not self.current_case:
+            return "No active case to update."
             
-            # Load existing leads
-            leads = []
-            if self.leads_path.exists():
-                with open(self.leads_path, "r") as f:
-                    try:
-                        leads = json.load(f)
-                    except json.JSONDecodeError:
-                        leads = []
-            
-            leads.append(lead_data)
-            
-            # Save back
-            with open(self.leads_path, "w") as f:
-                json.dump(leads, f, indent=2)
-                
-            logger.info(f"Lead saved: {name}, {target_exam}")
-            return "Lead saved successfully. All the best for your preparation!"
-            
-        except Exception as e:
-            logger.error(f"Error saving lead: {e}")
-            return "There was an error saving your details, but I have noted them down."
+        username = self.current_case['username']
+        database.update_case_status(username, status, note)
+        
+        return f"Case for {username} updated to {status}. You may now end the call."
 
 def prewarm(proc: JobProcess):
-    """Preload models to minimize first-call latency"""
-    # Preload VAD model
     proc.userdata["vad"] = silero.VAD.load()
-    
-    # Preload STT model to reduce initialization time
     proc.userdata["stt"] = deepgram.STT(model="nova-3")
-
 
 async def entrypoint(ctx: JobContext):
     try:
-        ctx.log_context_fields = {
-            "room": ctx.room.name,
-        }
-
-        # Initialize the agent
-        agent = PhysicsWallahSDRAgent()
-
+        ctx.log_context_fields = {"room": ctx.room.name}
+        
+        agent = FraudAlertAgent()
+        
         session = AgentSession(
             stt=ctx.proc.userdata.get("stt") or deepgram.STT(model="nova-3"),
-            llm=google.LLM(
-                model="gemini-2.5-flash",
-            ),
-            # Use Deepgram Aura TTS (reliable fallback)
-            tts=deepgram.TTS(
-                model="aura-helios-en",  # Professional male voice
-            ), 
+            llm=google.LLM(model="gemini-2.5-flash"),
+            tts=deepgram.TTS(model="aura-helios-en"),
             turn_detection=MultilingualModel(),
             vad=ctx.proc.userdata["vad"],
             preemptive_generation=True,
         )
         
         usage_collector = metrics.UsageCollector()
-
+        
         @session.on("metrics_collected")
         def _on_metrics_collected(ev: MetricsCollectedEvent):
             metrics.log_metrics(ev.metrics)
@@ -196,14 +152,15 @@ async def entrypoint(ctx: JobContext):
                 noise_cancellation=noise_cancellation.BVC(),
             ),
         )
+        
+        # Initial greeting
+        await session.say("Hello, this is the Fraud Department at SecureBank. I'm calling about a suspicious transaction. Could you please verify your username so I can pull up your file?", add_to_chat_ctx=True)
 
         await ctx.connect()
     
     except Exception as e:
         logger.error(f"Error in entrypoint: {e}")
-        logger.error(traceback.format_exc())
         raise e
-
 
 if __name__ == "__main__":
     cli.run_app(
