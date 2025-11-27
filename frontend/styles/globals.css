@@ -1,111 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
-:root {
-  --radius: 0.75rem;
-
-  --background: 210 40% 98%;
-  /* Light Blueish White */
-  --foreground: 222 47% 11%;
-  /* Slate 900 */
-
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-
-  --primary: #E40000;
-  /* Airtel Red */
-  --primary-foreground: 210 40% 98%;
-
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222 47% 11%;
-
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215 16% 47%;
-
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222 47% 11%;
-
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: #E40000;
-
-  --chart-1: #E40000;
-  --chart-2: 210 9% 34%;
-  --chart-3: 199 89% 48%;
-  --chart-4: 43 96% 58%;
-  --chart-5: 27 87% 67%;
-
-  --sidebar: 0 0% 100%;
-  --sidebar-foreground: 240 5.3% 26.1%;
-  --sidebar-primary: #E40000;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 240 4.8% 95.9%;
-  --sidebar-accent-foreground: #E40000;
-  --sidebar-border: 220 13% 91%;
-  --sidebar-ring: #E40000;
-}
-
-.dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-
-  --primary: #E40000;
-  --primary-foreground: 0 0% 98%;
-
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: #E40000;
-
-  --chart-1: #E40000;
-  --chart-2: 210 9% 34%;
-  --chart-3: 199 89% 48%;
-  --chart-4: 43 96% 58%;
-  --chart-5: 27 87% 67%;
-
-  --sidebar: 240 5.9% 10%;
-  --sidebar-foreground: 240 4.8% 95.9%;
-  --sidebar-primary: #E40000;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 240 3.7% 15.9%;
-  --sidebar-accent-foreground: 240 4.8% 95.9%;
-  --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: #E40000;
-}
-
-@theme inline {
-  --font-sans:
-    var(--font-montserrat), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-mono:
-    var(--font-commit-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
-
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -121,115 +16,33 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
+  --radius-radius: var(--radius);
 
-@layer base {
-  * {
-    @apply border-foreground/20 outline-ring/50;
-  }
+  --animate-float: float 20s ease-in-out infinite;
+  --animate-float-delayed: float 25s ease-in-out infinite reverse;
+  --animate-gradient: gradient 8s ease infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
 
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-@layer utilities {
-
-  /* Existing utilities */
   @keyframes float {
-
-    0%,
-    100% {
-      transform: translateY(0px) translateX(0px);
-    }
-
-    50% {
-      transform: translateY(-20px) translateX(10px);
-    }
-  }
-
-  @keyframes float-delayed {
-
-    0%,
-    100% {
-      transform: translateY(0px) translateX(0px);
-    }
-
-    50% {
-      transform: translateY(20px) translateX(-10px);
-    }
-  }
-
-  @keyframes gradient-x {
-
-    0%,
-    100% {
-      background-size: 200% 200%;
-      background-position: left center;
-    }
-
-    50% {
-      background-size: 200% 200%;
-      background-position: right center;
-    }
-  }
-
-  @keyframes steam {
     0% {
-      transform: translateY(0) scale(1);
-      opacity: 0.6;
+      transform: translate(0, 0) rotate(0deg);
+    }
+
+    33% {
+      transform: translate(30px, -50px) rotate(10deg);
+    }
+
+    66% {
+      transform: translate(-20px, 20px) rotate(-5deg);
     }
 
     100% {
-      transform: translateY(-20px) scale(1.2);
-      opacity: 0;
+      transform: translate(0, 0) rotate(0deg);
     }
-  }
-
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .animate-float-delayed {
-    animation: float-delayed 8s ease-in-out infinite;
-  }
-
-  .animate-gradient-x {
-    animation: gradient-x 3s ease infinite;
-  }
-
-  .animate-steam {
-    animation: steam 2s ease-out infinite;
-  }
-
-  @keyframes shimmer {
-    from {
-      background-position: 0 0;
-    }
-
-    to {
-      background-position: -200% 0;
-    }
-  }
-
-  .animate-shimmer {
-    animation: shimmer 2s linear infinite;
   }
 
   @keyframes gradient {
@@ -246,11 +59,91 @@
     }
   }
 
-  .animate-gradient {
-    animation: gradient 6s ease infinite;
+  @keyframes shimmer {
+    from {
+      transform: translateX(-100%);
+    }
+
+    to {
+      transform: translateX(100%);
+    }
+  }
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a0b2e;
+  /* Dark Purple/Black */
+
+  --card: #ffffff;
+  --card-foreground: #1a0b2e;
+
+  --popover: #ffffff;
+  --popover-foreground: #1a0b2e;
+
+  --primary: #3C006B;
+  /* Zepto Deep Purple */
+  --primary-foreground: #ffffff;
+
+  --secondary: #FFD700;
+  /* Speed Yellow/Gold */
+  --secondary-foreground: #3C006B;
+
+  --muted: #f3e8ff;
+  /* Light Purple */
+  --muted-foreground: #6b21a8;
+
+  --accent: #FF3269;
+  /* Zepto Hot Pink */
+  --accent-foreground: #ffffff;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #e9d5ff;
+  --input: #e9d5ff;
+  --ring: #FF3269;
+
+  --radius: 1rem;
+}
+
+.dark {
+  --background: #1a0b2e;
+  --foreground: #ffffff;
+
+  --card: #2d0050;
+  --card-foreground: #ffffff;
+
+  --popover: #2d0050;
+  --popover-foreground: #ffffff;
+
+  --primary: #3C006B;
+  --primary-foreground: #ffffff;
+
+  --secondary: #FFD700;
+  --secondary-foreground: #3C006B;
+
+  --muted: #4c1d95;
+  --muted-foreground: #d8b4fe;
+
+  --accent: #FF3269;
+  --accent-foreground: #ffffff;
+
+  --destructive: #7f1d1d;
+  --destructive-foreground: #ffffff;
+
+  --border: #4c1d95;
+  --input: #4c1d95;
+  --ring: #FF3269;
+}
+
+@layer base {
+  * {
+    @apply border-border;
   }
 
-  .bg-300\% {
-    background-size: 300% 300%;
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }

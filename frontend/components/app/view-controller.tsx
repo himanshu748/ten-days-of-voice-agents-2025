@@ -7,8 +7,9 @@ import { useSession } from '@/components/app/session-provider';
 import { SessionView } from '@/components/app/session-view';
 import { WelcomeView } from '@/components/app/welcome-view';
 
-const MotionWelcomeView = motion.create(WelcomeView);
-const MotionSessionView = motion.create(SessionView);
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
 
 const VIEW_MOTION_PROPS = {
   variants: {
@@ -33,6 +34,7 @@ export function ViewController() {
   const isSessionActiveRef = useRef(false);
   const { appConfig, isSessionActive, startSession } = useSession();
 
+
   // animation handler holds a reference to stale isSessionActive value
   isSessionActiveRef.current = isSessionActive;
 
@@ -47,16 +49,22 @@ export function ViewController() {
     <AnimatePresence mode="wait">
       {/* Welcome screen */}
       {!isSessionActive && (
-        <MotionWelcomeView key="welcome" {...VIEW_MOTION_PROPS} onStart={startSession} />
+        <motion.div key="welcome" {...VIEW_MOTION_PROPS} className="absolute inset-0 z-10">
+          <WelcomeView onStart={startSession} />
+        </motion.div>
       )}
       {/* Session view */}
       {isSessionActive && (
-        <MotionSessionView
+        <motion.div
           key="session-view"
           {...(VIEW_MOTION_PROPS as any)}
-          appConfig={appConfig}
+          className="absolute inset-0 z-10"
           onAnimationComplete={handleAnimationComplete}
-        />
+        >
+          <SessionView
+            appConfig={appConfig}
+          />
+        </motion.div>
       )}
     </AnimatePresence>
   );

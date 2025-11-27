@@ -1,12 +1,12 @@
-import { Montserrat } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import localFont from 'next/font/local';
 import { headers } from 'next/headers';
 import { ApplyThemeScript, ThemeToggle } from '@/components/app/theme-toggle';
 import { cn, getAppConfig, getStyles } from '@/lib/utils';
 import '@/styles/globals.css';
 
-const montserrat = Montserrat({
-  variable: '--font-montserrat',
+const outfit = Outfit({
+  variable: '--font-outfit',
   subsets: ['latin'],
 });
 
@@ -52,7 +52,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       lang="en"
       suppressHydrationWarning
       className={cn(
-        montserrat.variable,
+        outfit.variable,
         commitMono.variable,
         'scroll-smooth font-sans antialiased'
       )}
@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <meta name="description" content={pageDescription} />
         <ApplyThemeScript />
       </head>
-      <body className="overflow-x-hidden">
+      <body className="overflow-x-hidden bg-slate-50">
         {children}
         <div className="group fixed bottom-0 left-1/2 z-50 mb-2 -translate-x-1/2">
           <ThemeToggle className="translate-y-20 transition-transform delay-150 duration-300 group-hover:translate-y-0" />

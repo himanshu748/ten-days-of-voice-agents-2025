@@ -20,23 +20,23 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Airtel Payments Bank',
-  pageTitle: 'Airtel Payments Bank Fraud Alert',
+  companyName: 'Zepto',
+  pageTitle: 'Zepto Voice - 10 Min Grocery Delivery',
   pageDescription:
-    'Your security is our priority. 24/7 Fraud Detection and Prevention System.',
+    'Groceries delivered in 10 minutes. Just ask Zepto Voice.',
 
   supportsChatInput: true,
-  supportsVideoInput: false, // Fraud alerts usually voice-only
+  supportsVideoInput: false,
   supportsScreenShare: false,
   isPreConnectBufferEnabled: true,
 
-  logo: '/logo.svg',
-  accent: '#E40000', // Airtel Red
+  logo: '/logo.svg', // We'll keep the file but ignore it visually if we use text/emoji
+  accent: '#3C006B', // Zepto Purple
   logoDark: '/logo.svg',
-  accentDark: '#ff4d4d', // Lighter Red for dark mode
-  startButtonText: 'Connect to Bank Support',
+  accentDark: '#FF3269', // Zepto Pink
+  startButtonText: 'Start Shopping',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,
-  agentName: undefined,
+  agentName: 'freshmarket-agent',
 };

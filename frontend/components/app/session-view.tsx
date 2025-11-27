@@ -19,6 +19,8 @@ import { useDebugMode } from '@/hooks/useDebug';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '../livekit/scroll-area/scroll-area';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const MotionBottom = motion.create('div');
 
 const IN_DEVELOPMENT = process.env.NODE_ENV !== 'production';
@@ -64,8 +66,6 @@ export function Fade({ top = false, bottom = false, className }: FadeProps) {
 interface SessionViewProps {
   appConfig: AppConfig;
 }
-
-// ... (existing imports)
 
 export const SessionView = ({
   appConfig,
@@ -125,27 +125,33 @@ export const SessionView = ({
   }, [room]);
 
   return (
-    <section className="relative z-10 h-full w-full overflow-hidden bg-slate-50" {...props}>
-      {/* Enhanced Background with Floating Shapes - SecureBank Theme */}
+    <section className="relative z-10 h-full w-full overflow-hidden bg-[#1a0b2e]" {...props}>
+      {/* Dark Zepto Background */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
-          backgroundImage: `radial-gradient(circle, #E40000 1px, transparent 1px)`,
-          backgroundSize: '30px 30px',
+          backgroundImage: `radial-gradient(circle, #FF3269 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
         }}
       />
-      <div className="animate-float pointer-events-none absolute top-[-10%] right-[-5%] h-[600px] w-[600px] rounded-full bg-gradient-to-br from-red-200/40 to-transparent opacity-50 blur-[120px]" />
-      <div className="animate-float-delayed pointer-events-none absolute bottom-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-gradient-to-tl from-orange-200/30 to-transparent opacity-50 blur-[100px]" />
+      <div className="animate-float pointer-events-none absolute top-[-20%] right-[-10%] h-[800px] w-[800px] rounded-full bg-gradient-to-br from-[#3C006B]/30 to-transparent blur-[120px]" />
+      <div className="animate-float-delayed pointer-events-none absolute bottom-[-20%] left-[-10%] h-[600px] w-[600px] rounded-full bg-gradient-to-tl from-[#FF3269]/20 to-transparent blur-[100px]" />
 
-      {/* Enhanced Branding Header */}
-      <div className="group absolute top-4 left-4 z-50">
-        <div className="flex items-center gap-3 rounded-full border border-red-100 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-red-200 hover:shadow-md">
-          <div className="relative">
-            <span className="text-2xl">🛡️</span>
-            <div className="absolute inset-0 rounded-full bg-red-500/20 opacity-0 blur-md transition-opacity group-hover:opacity-50" />
+      {/* Floating Header */}
+      <div className="absolute top-6 left-1/2 z-50 -translate-x-1/2">
+        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/20 px-6 py-3 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-[#FF3269]/40 hover:bg-black/30">
+          <div className="relative flex h-6 w-6 items-center justify-center rounded-full bg-[#3C006B] text-xs font-bold text-white">
+            Z
+            <div className="absolute inset-0 animate-pulse rounded-full bg-[#FF3269]/50 blur-sm" />
           </div>
-          <div className="animate-gradient bg-gradient-to-r from-red-700 via-red-600 to-red-800 bg-[length:200%_auto] bg-clip-text text-xl font-bold tracking-tight text-transparent transition-all group-hover:from-red-600 group-hover:via-orange-500 group-hover:to-red-600">
-            Airtel Payments Bank Support
+          <div className="flex items-center gap-2">
+            <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-sm font-bold tracking-wide text-transparent">
+              Zepto Voice
+            </span>
+            <span className="flex h-1.5 w-1.5 rounded-full bg-[#10B981] shadow-[0_0_8px_#10B981]" />
+            <span className="text-[10px] font-medium tracking-wider text-[#10B981] uppercase">
+              Live
+            </span>
           </div>
         </div>
       </div>
@@ -177,21 +183,26 @@ export const SessionView = ({
       {/* Tile Layout */}
       <TileLayout chatOpen={chatOpen} />
 
-      {/* Bottom */}
+      {/* Bottom Controls */}
       <MotionBottom
         {...BOTTOM_VIEW_MOTION_PROPS}
-        className="fixed inset-x-3 bottom-4 z-50 md:inset-x-12"
+        className="fixed inset-x-3 bottom-8 z-50 flex justify-center md:inset-x-12"
       >
-        {appConfig.isPreConnectBufferEnabled && (
-          <PreConnectMessage messages={messages} className="pb-4" />
-        )}
-        <div className="bg-background/95 border-primary/20 relative mx-auto max-w-2xl rounded-t-3xl border-t-2 pb-3 shadow-[0_-15px_50px_-20px_rgba(220,38,38,0.2)] backdrop-blur-xl md:pb-12">
-          <Fade bottom className="absolute inset-x-0 top-0 h-4 -translate-y-full" />
-          <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
-          <div className="absolute right-0 bottom-2 left-0 text-center">
-            <p className="text-muted-foreground/60 flex items-center justify-center gap-2 text-[9px] font-medium tracking-wider uppercase">
-              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
-              &copy; 2025 · AIRTEL PAYMENTS BANK SUPPORT · CONNECTED
+        <div className="flex w-full max-w-2xl flex-col gap-4">
+          {appConfig.isPreConnectBufferEnabled && (
+            <PreConnectMessage messages={messages} className="mx-auto" />
+          )}
+
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-black/40 p-2 shadow-[0_0_40px_-10px_rgba(60,0,107,0.5)] backdrop-blur-2xl transition-all duration-300 hover:border-[#FF3269]/30 hover:shadow-[0_0_60px_-10px_rgba(255,50,105,0.3)]">
+            {/* Glow Effect */}
+            <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-50" />
+
+            <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
+          </div>
+
+          <div className="text-center">
+            <p className="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase">
+              Powered by Zepto AI
             </p>
           </div>
         </div>

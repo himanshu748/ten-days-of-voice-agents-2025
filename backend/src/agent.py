@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 import json
 from datetime import datetime
-from typing import Annotated, Dict, Any, Optional
+from typing import Annotated, Dict, Any, Optional, List
 
 # Load env vars
 env_path = Path(__file__).parent.parent / ".env.local"
@@ -26,115 +26,212 @@ from livekit.agents import (
 )
 from livekit.plugins import silero, google, deepgram, noise_cancellation, murf
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
+
 try:
-    from src import database
+    from src.cart import Cart
+    from src.order_manager import OrderManager
 except ImportError:
-    import database
+    from cart import Cart
+    from order_manager import OrderManager
 
-logger = logging.getLogger("fraud-agent")
+logger = logging.getLogger("grocery-agent")
 
-class FraudAlertAgent(Agent):
+# Load Catalog
+CATALOG_PATH = Path(__file__).parent / "catalog.json"
+try:
+    with open(CATALOG_PATH, "r") as f:
+        CATALOG = json.load(f)
+    logger.info(f"Loaded catalog with {len(CATALOG)} items")
+except Exception as e:
+    logger.error(f"Failed to load catalog: {e}")
+    CATALOG = []
+
+class GroceryAgent(Agent):
     def __init__(self) -> None:
         super().__init__(
             instructions=self._get_instructions(),
         )
-        self.current_case: Optional[Dict[str, Any]] = None
+        self.cart = Cart()
+        self.order_manager = OrderManager(orders_dir=str(Path(__file__).parent.parent / "orders"))
+        self.catalog_lookup = {item["name"].lower(): item for item in CATALOG}
 
     def _get_instructions(self) -> str:
         return """
-        You are a **Fraud Detection Representative** for **Airtel Payments Bank**.
+        You are a **Friendly Grocery Shopping Assistant** for **Zepto AI**.
         
         **YOUR GOAL:**
-        1.  **Identify the User:** Ask for the user's username to pull up their file.
-        2.  **Verify Identity:** Once you have the file, ask the security question associated with the account. Verify the answer provided by the user matches the expected answer exactly (case-insensitive).
-        3.  **Review Transaction:** If verified, read out the suspicious transaction details (Amount, Merchant, City, Time).
-        4.  **Confirm Legitimacy:** Ask the user if they made this transaction.
-        5.  **Take Action:**
-            - If **YES** (User made it): Mark as SAFE.
-            - If **NO** (User didn't make it): Mark as FRAUDULENT and explain that the card is being blocked.
-        6.  **End Call:** Confirm the action taken and say goodbye.
+        Help users order food and groceries, manage their cart, and place orders.
+        
+        **CAPABILITIES:**
+        1.  **Add Items:** Add specific items to the cart (e.g., "Add milk").
+        2.  **Ingredients for Recipes:** Intelligently add multiple items for a dish (e.g., "Ingredients for a sandwich" -> Bread, PB, Jelly).
+        3.  **Manage Cart:** Remove items, update quantities, or clear the cart.
+        4.  **Check Cart:** List what's in the cart.
+        5.  **Checkout:** Confirm the order and save it.
+
+        **CATALOG:**
+        You have access to a catalog of items (Groceries, Snacks, Prepared Food). 
+        If a user asks for something not in the catalog, politely say you don't carry it but offer a similar item if available.
 
         **TONE:**
-        - Professional, Calm, Reassuring, and Efficient.
-        - Do NOT ask for full card numbers, PINs, or passwords.
-        
+        - Friendly, helpful, and efficient.
+        - Confirm actions clearly (e.g., "I've added organic milk to your cart.").
+        - When the user says "that's all" or "place order", summarize the cart and ask for confirmation before placing it.
+
         **TOOLS:**
-        - Use `lookup_user` to find the case.
-        - Use `update_case_status` to finalize the result.
+        - `add_to_cart`: Add items.
+        - `remove_from_cart`: Remove items.
+        - `view_cart`: Get current cart state.
+        - `place_order`: Finalize the order.
+        - `get_ingredients_for_dish`: Find items for a recipe.
         """
 
     @function_tool
-    async def lookup_user(
+    async def add_to_cart(
         self,
         ctx: RunContext,
-        username: Annotated[str, "The username provided by the user"],
+        item_name: Annotated[str, "The name of the item to add"],
+        quantity: Annotated[int, "The quantity to add"] = 1,
+        notes: Annotated[str, "Any special notes (e.g., 'large size')"] = "",
     ):
-        """Look up a fraud case by username."""
-        logger.info(f"Tool lookup_user called with: '{username}'")
+        """Add an item to the cart. Tries to match item_name to catalog."""
+        logger.info(f"Tool add_to_cart called: {item_name} x{quantity}")
         
-        # Use fuzzy lookup to handle "janesmith" vs "jane_smith"
-        case = database.find_user_fuzzy(username)
+        # Simple fuzzy match or direct lookup
+        item_key = item_name.lower()
+        matched_item = None
+        
+        # Exact match
+        if item_key in self.catalog_lookup:
+            matched_item = self.catalog_lookup[item_key]
+        else:
+            # Partial match
+            for name, item in self.catalog_lookup.items():
+                if item_key in name or name in item_key:
+                    matched_item = item
+                    break
+        
+        if not matched_item:
+            return f"I couldn't find '{item_name}' in our catalog. We have: {', '.join(list(self.catalog_lookup.keys())[:5])}..."
 
-        if not case:
-            logger.warning(f"User not found: '{username}'")
-            return "User not found. Please ask the user to spell their username or try again. (Hint: valid users are john_doe, jane_smith, etc.)"
+        added_item = self.cart.add_item(
+            item_id=matched_item["id"],
+            name=matched_item["name"],
+            price=matched_item["price"],
+            quantity=quantity,
+            notes=notes
+        )
         
-        logger.info(f"User found: {case['username']}")
-        self.current_case = case
-        
-        # Return details for the LLM to use
-        return f"""
-        Case Found:
-        - Username: {case['username']}
-        - Security Question: {case['security_question']}
-        - Expected Answer: {case['security_answer']}
-        - Transaction: {case['transaction_amount']} at {case['transaction_merchant']} in {case['transaction_city']} on {case['transaction_time']}
-        - Card Ending: {case['card_ending']}
-        
-        INSTRUCTIONS:
-        1. Ask the security question: "{case['security_question']}"
-        2. If they answer "{case['security_answer']}", proceed to describe the transaction.
-        3. If they fail, politely end the call.
-        """
+        return f"Added {quantity}x {matched_item['name']} to cart. Total: ${self.cart.get_total():.2f}"
 
     @function_tool
-    async def update_case_status(
+    async def remove_from_cart(
         self,
         ctx: RunContext,
-        status: Annotated[str, "The final status: 'confirmed_safe' or 'confirmed_fraud'"],
-        note: Annotated[str, "A brief note about the outcome (e.g., 'User confirmed transaction')"],
+        item_name: Annotated[str, "The name of the item to remove"],
     ):
-        """Update the fraud case status in the database."""
-        if not self.current_case:
-            return "No active case to update."
-            
-        username = self.current_case['username']
-        database.update_case_status(username, status, note)
+        """Remove an item from the cart."""
+        # Find item in cart by name
+        item_id_to_remove = None
+        for item in self.cart.items.values():
+            if item_name.lower() in item.name.lower():
+                item_id_to_remove = item.id
+                break
         
-        return f"Case for {username} updated to {status}. You may now end the call."
+        if item_id_to_remove:
+            removed = self.cart.remove_item(item_id_to_remove)
+            return f"Removed {removed.name} from your cart."
+        else:
+            return f"I couldn't find '{item_name}' in your cart."
+
+    @function_tool
+    async def view_cart(self, ctx: RunContext):
+        """Get the current status of the cart."""
+        return str(self.cart)
+
+    @function_tool
+    async def get_ingredients_for_dish(
+        self,
+        ctx: RunContext,
+        dish_name: Annotated[str, "The name of the dish (e.g., 'sandwich', 'pasta')"],
+    ):
+        """Finds ingredients in the catalog for a specific dish and adds them to the cart."""
+        logger.info(f"Tool get_ingredients_for_dish called: {dish_name}")
+        dish = dish_name.lower()
+        added_items = []
+
+        # Simple hardcoded recipe logic (can be expanded)
+        if "sandwich" in dish:
+            # Bread, PB, Jelly
+            for key in ["whole wheat bread", "creamy peanut butter", "strawberry preserves"]:
+                if key in self.catalog_lookup:
+                    item = self.catalog_lookup[key]
+                    self.cart.add_item(item["id"], item["name"], item["price"], 1)
+                    added_items.append(item["name"])
+        
+        elif "pasta" in dish or "spaghetti" in dish:
+            # Pasta, Sauce, Cheese
+            for key in ["spaghetti pasta", "marinara sauce", "parmesan cheese"]:
+                if key in self.catalog_lookup:
+                    item = self.catalog_lookup[key]
+                    self.cart.add_item(item["id"], item["name"], item["price"], 1)
+                    added_items.append(item["name"])
+        
+        elif "pizza" in dish:
+             if "pepperoni pizza" in self.catalog_lookup:
+                item = self.catalog_lookup["pepperoni pizza"]
+                self.cart.add_item(item["id"], item["name"], item["price"], 1)
+                added_items.append(item["name"])
+
+        if added_items:
+            return f"I've added the following ingredients for {dish_name}: {', '.join(added_items)}."
+        else:
+            return f"I'm not sure what ingredients you need for {dish_name}, or we don't carry them. You can ask for specific items."
+
+    @function_tool
+    async def place_order(self, ctx: RunContext):
+        """Finalize the order and save it."""
+        if not self.cart.items:
+            return "Your cart is empty. I can't place an empty order."
+        
+        try:
+            order_id = self.order_manager.place_order(self.cart)
+            total = self.cart.get_total()
+            self.cart.clear() # Clear cart after order
+            return f"Order placed successfully! Order ID is {order_id}. Total amount: ${total:.2f}. Thank you for shopping with Zepto!"
+        except Exception as e:
+            logger.error(f"Failed to place order: {e}")
+            return "I'm sorry, there was an issue placing your order. Please try again."
 
 def prewarm(proc: JobProcess):
-    proc.userdata["vad"] = silero.VAD.load()
-    proc.userdata["stt"] = deepgram.STT(model="nova-3")
+    try:
+        logger.info("Starting prewarm...")
+        proc.userdata["vad"] = silero.VAD.load()
+        proc.userdata["stt"] = deepgram.STT(model="nova-3")
+        # proc.userdata["turn_detection"] = MultilingualModel()
+        
+        if not os.getenv("DEEPGRAM_API_KEY"):
+            logger.error("DEEPGRAM_API_KEY is missing")
+        if not os.getenv("GOOGLE_API_KEY"):
+            logger.error("GOOGLE_API_KEY is missing")
+            
+        logger.info("Prewarm completed")
+    except Exception as e:
+        logger.error(f"Prewarm failed: {e}", exc_info=True)
+        raise e
 
 async def entrypoint(ctx: JobContext):
     try:
+        logger.info("Entrypoint started")
         ctx.log_context_fields = {"room": ctx.room.name}
         
-        agent = FraudAlertAgent()
+        agent = GroceryAgent()
         
         session = AgentSession(
             stt=ctx.proc.userdata.get("stt") or deepgram.STT(model="nova-3"),
             llm=google.LLM(model="gemini-2.5-flash"),
-            tts=murf.TTS(
-                voice="Matthew",
-                style="Conversation",
-                speed=5,
-                pitch=0,
-                model="FALCON",
-                sample_rate=24000,
-            ),
-            turn_detection=MultilingualModel(),
+            tts=deepgram.TTS(model="aura-helios-en"), 
+            turn_detection=ctx.proc.userdata.get("turn_detection") or MultilingualModel(),
             vad=ctx.proc.userdata["vad"],
             preemptive_generation=True,
         )
@@ -152,6 +249,7 @@ async def entrypoint(ctx: JobContext):
 
         ctx.add_shutdown_callback(log_usage)
 
+        logger.info("Starting session...")
         await session.start(
             agent=agent,
             room=ctx.room,
@@ -160,12 +258,14 @@ async def entrypoint(ctx: JobContext):
             ),
         )
         
+        logger.info("Connecting to room...")
         await ctx.connect()
+        logger.info("Connected to room")
+        
         # Initial greeting
-        await session.say("Hello, this is the Fraud Department at Airtel Payments Bank. I'm calling about a suspicious transaction. Could you please verify your username so I can pull up your file?", add_to_chat_ctx=True)
+        await session.say("Welcome to Zepto AI! I can help you order groceries, snacks, or find ingredients for your favorite meals. What can I get for you today?", add_to_chat_ctx=True)
+        logger.info("Initial greeting sent")
 
-
-    
     except Exception as e:
         logger.error(f"Error in entrypoint: {e}")
         raise e
@@ -175,8 +275,10 @@ if __name__ == "__main__":
         WorkerOptions(
             entrypoint_fnc=entrypoint, 
             prewarm_fnc=prewarm,
+            agent_name="freshmarket-agent",
             ws_url=os.getenv("LIVEKIT_URL"),
             api_key=os.getenv("LIVEKIT_API_KEY"),
             api_secret=os.getenv("LIVEKIT_API_SECRET"),
         )
     )
+

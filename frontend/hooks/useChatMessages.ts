@@ -11,6 +11,7 @@ import {
 function transcriptionToChatMessage(textStream: TextStreamData, room: Room): ReceivedChatMessage {
   return {
     id: textStream.streamInfo.id,
+    type: 'chatMessage',
     timestamp: textStream.streamInfo.timestamp,
     message: textStream.text,
     from:
