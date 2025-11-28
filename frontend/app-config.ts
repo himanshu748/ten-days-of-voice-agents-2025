@@ -20,10 +20,9 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Burger King',
-  pageTitle: 'Burger King Voice Order',
-  pageDescription:
-    'Order flame-grilled burgers with your voice. Have it your way.',
+  companyName: 'KFC',
+  pageTitle: 'KFC Voice Order',
+  pageDescription: "Order your favorite fried chicken with your voice. Finger Lickin' Good.",
 
   supportsChatInput: true,
   supportsVideoInput: false,
@@ -31,9 +30,9 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   isPreConnectBufferEnabled: true,
 
   logo: '/logo.svg', // We'll keep the file but ignore it visually if we use text/emoji
-  accent: '#D62300', // Burger King Red
+  accent: '#F40027', // KFC Red
   logoDark: '/logo.svg',
-  accentDark: '#E55F25', // Burger King Orange
+  accentDark: '#F40027', // KFC Red
   startButtonText: 'Start Ordering',
 
   // for LiveKit Cloud Sandbox

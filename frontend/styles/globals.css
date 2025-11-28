@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --color-background: var(--background);
@@ -95,7 +95,6 @@
 }
 
 @keyframes flame-glow {
-
   0%,
   100% {
     box-shadow: 0 0 25px -5px rgba(214, 35, 0, 0.6);
@@ -109,73 +108,73 @@
 }
 
 :root {
-  --background: #F5EBDC;
-  /* Burger King Cream */
-  --foreground: #502314;
-  /* Burger King Brown */
+  --background: #ffffff;
+  /* White */
+  --foreground: #000000;
+  /* Black */
 
   --card: #ffffff;
-  --card-foreground: #502314;
+  --card-foreground: #000000;
 
   --popover: #ffffff;
-  --popover-foreground: #502314;
+  --popover-foreground: #000000;
 
-  --primary: #D62300;
-  /* Burger King Red */
+  --primary: #f40027;
+  /* KFC Red */
   --primary-foreground: #ffffff;
 
-  --secondary: #E55F25;
-  /* Burger King Orange */
+  --secondary: #f40027;
+  /* KFC Red */
   --secondary-foreground: #ffffff;
 
-  --muted: #F5EBDC;
-  /* Cream */
-  --muted-foreground: #502314;
+  --muted: #f3f4f6;
+  /* Light Gray */
+  --muted-foreground: #000000;
 
-  --accent: #E55F25;
-  /* Burger King Orange */
+  --accent: #f40027;
+  /* KFC Red */
   --accent-foreground: #ffffff;
 
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
 
-  --border: #502314;
-  --input: #502314;
-  --ring: #D62300;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #f40027;
 
   --radius: 1rem;
 }
 
 .dark {
-  --background: #502314;
-  /* Burger King Brown */
-  --foreground: #F5EBDC;
-  /* Cream */
+  --background: #000000;
+  /* Black */
+  --foreground: #ffffff;
+  /* White */
 
-  --card: #2d140b;
-  --card-foreground: #F5EBDC;
+  --card: #1f2937;
+  --card-foreground: #ffffff;
 
-  --popover: #2d140b;
-  --popover-foreground: #F5EBDC;
+  --popover: #1f2937;
+  --popover-foreground: #ffffff;
 
-  --primary: #D62300;
+  --primary: #f40027;
   --primary-foreground: #ffffff;
 
-  --secondary: #E55F25;
+  --secondary: #f40027;
   --secondary-foreground: #ffffff;
 
-  --muted: #2d140b;
-  --muted-foreground: #F5EBDC;
+  --muted: #374151;
+  --muted-foreground: #ffffff;
 
-  --accent: #E55F25;
+  --accent: #f40027;
   --accent-foreground: #ffffff;
 
   --destructive: #7f1d1d;
   --destructive-foreground: #ffffff;
 
-  --border: #F5EBDC;
-  --input: #F5EBDC;
-  --ring: #D62300;
+  --border: #374151;
+  --input: #374151;
+  --ring: #f40027;
 }
 
 @layer base {
@@ -185,6 +184,8 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 }

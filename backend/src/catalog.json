@@ -176,5 +176,53 @@
             "fruit",
             "healthy"
         ]
+    },
+    {
+        "id": "kfc_zinger_1",
+        "name": "Zinger Burger",
+        "category": "KFC Specials",
+        "price": 5.99,
+        "unit": "each",
+        "tags": [
+            "fast food",
+            "chicken",
+            "spicy"
+        ]
+    },
+    {
+        "id": "kfc_bucket_1",
+        "name": "Family Bucket (12pc)",
+        "category": "KFC Specials",
+        "price": 19.99,
+        "unit": "bucket",
+        "tags": [
+            "fast food",
+            "chicken",
+            "family"
+        ]
+    },
+    {
+        "id": "kfc_popcorn_1",
+        "name": "Popcorn Chicken",
+        "category": "KFC Specials",
+        "price": 4.99,
+        "unit": "box",
+        "tags": [
+            "fast food",
+            "chicken",
+            "snack"
+        ]
+    },
+    {
+        "id": "kfc_wings_1",
+        "name": "Hot Wings (6pc)",
+        "category": "KFC Specials",
+        "price": 5.49,
+        "unit": "box",
+        "tags": [
+            "fast food",
+            "chicken",
+            "spicy"
+        ]
     }
 ]

@@ -9,8 +9,6 @@ import { WelcomeView } from '@/components/app/welcome-view';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
-
 const VIEW_MOTION_PROPS = {
   variants: {
     visible: {
@@ -33,7 +31,6 @@ export function ViewController() {
   const room = useRoomContext();
   const isSessionActiveRef = useRef(false);
   const { appConfig, isSessionActive, startSession } = useSession();
-
 
   // animation handler holds a reference to stale isSessionActive value
   isSessionActiveRef.current = isSessionActive;
@@ -61,9 +58,7 @@ export function ViewController() {
           className="absolute inset-0 z-10"
           onAnimationComplete={handleAnimationComplete}
         >
-          <SessionView
-            appConfig={appConfig}
-          />
+          <SessionView appConfig={appConfig} />
         </motion.div>
       )}
     </AnimatePresence>

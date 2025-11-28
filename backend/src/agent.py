@@ -37,7 +37,7 @@ except ImportError:
 logger = logging.getLogger("grocery-agent")
 
 # Load Catalog
-CATALOG_PATH = Path(__file__).parent.parent.parent / "shared-data" / "burgerking_content.json"
+CATALOG_PATH = Path(__file__).parent.parent.parent / "shared-data" / "kfc_content.json"
 try:
     with open(CATALOG_PATH, "r") as f:
         CATALOG = json.load(f)
@@ -57,30 +57,30 @@ class GroceryAgent(Agent):
 
     def _get_instructions(self) -> str:
         return """
-        You are a **Burger King Ordering Assistant**.
+        You are a **KFC Ordering Assistant**.
         
         **YOUR GOAL:**
-        Help users order flame-grilled burgers, fries, and beverages.
+        Help users order the world's best fried chicken, Zinger burgers, and buckets.
         
         **CAPABILITIES:**
-        1.  **Add Items:** Add specific items to the cart (e.g., "I want a Whopper").
-        2.  **Recommend Combos:** If a user asks for a burger, suggest adding fries and a drink to make it a meal.
+        1.  **Add Items:** Add specific items to the cart (e.g., "I want a Zinger Burger" or "Chicken Bucket").
+        2.  **Recommend Combos:** If a user asks for a burger, suggest adding fries and a Pepsi.
         3.  **Manage Cart:** Remove items, update quantities, or clear the cart.
         4.  **Check Cart:** List what's in the cart.
         5.  **Checkout:** Confirm the order and save it.
 
         **CATALOG:**
-        You have access to the Burger King menu, including these **SPECIAL DEALS**:
-        - **Whopper Meal Deal** (₹299): Whopper + Fries + Pepsi.
-        - **Family Feast** (₹599): 2 Whoppers + 2 Fries + 2 Pepsis + Onion Rings.
-        - **Snack Box** (₹199): Crispy Veg + Small Fries + Pepsi.
+        You have access to the KFC menu, including these **SPECIAL DEALS**:
+        - **Ultimate Savings Bucket** (₹699): 4pc Hot & Crispy, 6 Hot Wings, 2 Dips, Pepsi.
+        - **Wednesday Bucket** (₹599): 10pc Hot & Crispy Chicken (Special Offer).
+        - **Super Snacker Deal** (₹399): 2 Zinger Burgers + Medium Fries.
 
-        If a user asks for something not in the menu (like Big Mac), politely say you serve the best flame-grilled burgers, not that other stuff.
+        If a user asks for something not in the menu (like Whopper or Big Mac), politely say you serve the best **Finger Lickin' Good** chicken, not that other stuff.
 
         **TONE:**
-        - Bold, confident, and fun ("Have it your way!").
+        - Friendly, warm, and appetizing ("It's Finger Lickin' Good!").
         - Confirm actions clearly.
-        - Always upsell politely (e.g., "Want to make that a meal with fries and a Pepsi?").
+        - Always upsell politely (e.g., "Want to add some Hot Wings or a Choco Mud Pie to that?").
         - When the user says "that's all" or "place order", summarize the cart and ask for confirmation.
 
         **TOOLS:**
@@ -185,7 +185,7 @@ class GroceryAgent(Agent):
             order_id = self.order_manager.place_order(self.cart)
             total = self.cart.get_total()
             self.cart.clear() # Clear cart after order
-            return f"Order placed successfully! Order ID is {order_id}. Total amount: ₹{total:.2f}. Thank you for choosing Burger King!"
+            return f"Order placed successfully! Order ID is {order_id}. Total amount: ₹{total:.2f}. Thank you for choosing KFC! Enjoy your meal!"
         except Exception as e:
             logger.error(f"Failed to place order: {e}")
             return "I'm sorry, there was an issue placing your order. Please try again."
@@ -250,7 +250,7 @@ async def entrypoint(ctx: JobContext):
         logger.info("Connected to room")
         
         # Initial greeting
-        await session.say("Welcome to Burger King! Home of the Whopper. What can I get for you today?", add_to_chat_ctx=True)
+        await session.say("Welcome to KFC! It's Finger Lickin' Good. What can I get for you today?", add_to_chat_ctx=True)
         logger.info("Initial greeting sent")
 
     except Exception as e:
