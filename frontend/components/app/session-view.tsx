@@ -67,6 +67,8 @@ interface SessionViewProps {
   appConfig: AppConfig;
 }
 
+import { DealsCarousel } from '@/components/app/deals-carousel';
+
 export const SessionView = ({
   appConfig,
   ...props
@@ -125,28 +127,28 @@ export const SessionView = ({
   }, [room]);
 
   return (
-    <section className="relative z-10 h-full w-full overflow-hidden bg-[#1a0b2e]" {...props}>
-      {/* Dark Zepto Background */}
+    <section className="relative z-10 h-full w-full overflow-hidden bg-[#F5EBDC]" {...props}>
+      {/* Burger King Background Pattern */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
-          backgroundImage: `radial-gradient(circle, #FF3269 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, #502314 1px, transparent 1px)`,
           backgroundSize: '40px 40px',
         }}
       />
-      <div className="animate-float pointer-events-none absolute top-[-20%] right-[-10%] h-[800px] w-[800px] rounded-full bg-gradient-to-br from-[#3C006B]/30 to-transparent blur-[120px]" />
-      <div className="animate-float-delayed pointer-events-none absolute bottom-[-20%] left-[-10%] h-[600px] w-[600px] rounded-full bg-gradient-to-tl from-[#FF3269]/20 to-transparent blur-[100px]" />
+      <div className="animate-float pointer-events-none absolute top-[-20%] right-[-10%] h-[800px] w-[800px] rounded-full bg-gradient-to-br from-[#E55F25]/20 to-transparent blur-[120px]" />
+      <div className="animate-float-delayed pointer-events-none absolute bottom-[-20%] left-[-10%] h-[600px] w-[600px] rounded-full bg-gradient-to-tl from-[#D62300]/10 to-transparent blur-[100px]" />
 
       {/* Floating Header */}
       <div className="absolute top-6 left-1/2 z-50 -translate-x-1/2">
-        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/20 px-6 py-3 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-[#FF3269]/40 hover:bg-black/30">
-          <div className="relative flex h-6 w-6 items-center justify-center rounded-full bg-[#3C006B] text-xs font-bold text-white">
-            Z
-            <div className="absolute inset-0 animate-pulse rounded-full bg-[#FF3269]/50 blur-sm" />
+        <div className="flex items-center gap-3 rounded-full border border-[#502314]/10 bg-white/40 px-6 py-3 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-[#D62300]/40 hover:bg-white/60">
+          <div className="relative flex h-6 w-6 items-center justify-center rounded-full bg-[#D62300] text-xs font-bold text-white">
+            BK
+            <div className="absolute inset-0 animate-pulse rounded-full bg-[#D62300]/50 blur-sm" />
           </div>
           <div className="flex items-center gap-2">
-            <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-sm font-bold tracking-wide text-transparent">
-              Zepto Voice
+            <span className="bg-gradient-to-r from-[#502314] to-[#502314]/80 bg-clip-text text-sm font-bold tracking-wide text-transparent">
+              Burger King Voice
             </span>
             <span className="flex h-1.5 w-1.5 rounded-full bg-[#10B981] shadow-[0_0_8px_#10B981]" />
             <span className="text-[10px] font-medium tracking-wider text-[#10B981] uppercase">
@@ -171,7 +173,7 @@ export const SessionView = ({
         )}
       >
         <Fade top className="absolute inset-x-4 top-0 h-40" />
-        <ScrollArea ref={scrollAreaRef} className="px-4 pt-40 pb-[150px] md:px-6 md:pb-[180px]">
+        <ScrollArea ref={scrollAreaRef} className="px-4 pt-40 pb-[220px] md:px-6 md:pb-[250px]">
           <ChatTranscript
             hidden={!chatOpen}
             messages={messages}
@@ -193,16 +195,21 @@ export const SessionView = ({
             <PreConnectMessage messages={messages} className="mx-auto" />
           )}
 
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-black/40 p-2 shadow-[0_0_40px_-10px_rgba(60,0,107,0.5)] backdrop-blur-2xl transition-all duration-300 hover:border-[#FF3269]/30 hover:shadow-[0_0_60px_-10px_rgba(255,50,105,0.3)]">
+          {/* Deals Carousel */}
+          <div className="mx-auto w-full max-w-sm">
+            <DealsCarousel />
+          </div>
+
+          <div className="relative overflow-hidden rounded-[2rem] border border-[#502314]/10 bg-white/40 p-2 shadow-[0_0_40px_-10px_rgba(214,35,0,0.2)] backdrop-blur-2xl transition-all duration-300 hover:border-[#D62300]/30 hover:shadow-[0_0_60px_-10px_rgba(214,35,0,0.3)]">
             {/* Glow Effect */}
-            <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-50" />
+            <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50" />
 
             <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
           </div>
 
           <div className="text-center">
-            <p className="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase">
-              Powered by Zepto AI
+            <p className="text-[10px] font-bold tracking-[0.2em] text-[#502314]/40 uppercase">
+              Powered by Burger King
             </p>
           </div>
         </div>

@@ -20,10 +20,10 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'Zepto',
-  pageTitle: 'Zepto Voice - 10 Min Grocery Delivery',
+  companyName: 'Burger King',
+  pageTitle: 'Burger King Voice Order',
   pageDescription:
-    'Groceries delivered in 10 minutes. Just ask Zepto Voice.',
+    'Order flame-grilled burgers with your voice. Have it your way.',
 
   supportsChatInput: true,
   supportsVideoInput: false,
@@ -31,10 +31,10 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   isPreConnectBufferEnabled: true,
 
   logo: '/logo.svg', // We'll keep the file but ignore it visually if we use text/emoji
-  accent: '#3C006B', // Zepto Purple
+  accent: '#D62300', // Burger King Red
   logoDark: '/logo.svg',
-  accentDark: '#FF3269', // Zepto Pink
-  startButtonText: 'Start Shopping',
+  accentDark: '#E55F25', // Burger King Orange
+  startButtonText: 'Start Ordering',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,

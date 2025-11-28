@@ -68,73 +68,114 @@
       transform: translateX(100%);
     }
   }
+
+  @keyframes pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.9) translateY(10px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+
+    100% {
+      transform: scale(1.2);
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes flame-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 25px -5px rgba(214, 35, 0, 0.6);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow: 0 0 50px -10px rgba(229, 95, 37, 0.8);
+    transform: scale(1.05);
+  }
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a0b2e;
-  /* Dark Purple/Black */
+  --background: #F5EBDC;
+  /* Burger King Cream */
+  --foreground: #502314;
+  /* Burger King Brown */
 
   --card: #ffffff;
-  --card-foreground: #1a0b2e;
+  --card-foreground: #502314;
 
   --popover: #ffffff;
-  --popover-foreground: #1a0b2e;
+  --popover-foreground: #502314;
 
-  --primary: #3C006B;
-  /* Zepto Deep Purple */
+  --primary: #D62300;
+  /* Burger King Red */
   --primary-foreground: #ffffff;
 
-  --secondary: #FFD700;
-  /* Speed Yellow/Gold */
-  --secondary-foreground: #3C006B;
+  --secondary: #E55F25;
+  /* Burger King Orange */
+  --secondary-foreground: #ffffff;
 
-  --muted: #f3e8ff;
-  /* Light Purple */
-  --muted-foreground: #6b21a8;
+  --muted: #F5EBDC;
+  /* Cream */
+  --muted-foreground: #502314;
 
-  --accent: #FF3269;
-  /* Zepto Hot Pink */
+  --accent: #E55F25;
+  /* Burger King Orange */
   --accent-foreground: #ffffff;
 
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
 
-  --border: #e9d5ff;
-  --input: #e9d5ff;
-  --ring: #FF3269;
+  --border: #502314;
+  --input: #502314;
+  --ring: #D62300;
 
   --radius: 1rem;
 }
 
 .dark {
-  --background: #1a0b2e;
-  --foreground: #ffffff;
+  --background: #502314;
+  /* Burger King Brown */
+  --foreground: #F5EBDC;
+  /* Cream */
 
-  --card: #2d0050;
-  --card-foreground: #ffffff;
+  --card: #2d140b;
+  --card-foreground: #F5EBDC;
 
-  --popover: #2d0050;
-  --popover-foreground: #ffffff;
+  --popover: #2d140b;
+  --popover-foreground: #F5EBDC;
 
-  --primary: #3C006B;
+  --primary: #D62300;
   --primary-foreground: #ffffff;
 
-  --secondary: #FFD700;
-  --secondary-foreground: #3C006B;
+  --secondary: #E55F25;
+  --secondary-foreground: #ffffff;
 
-  --muted: #4c1d95;
-  --muted-foreground: #d8b4fe;
+  --muted: #2d140b;
+  --muted-foreground: #F5EBDC;
 
-  --accent: #FF3269;
+  --accent: #E55F25;
   --accent-foreground: #ffffff;
 
   --destructive: #7f1d1d;
   --destructive-foreground: #ffffff;
 
-  --border: #4c1d95;
-  --input: #4c1d95;
-  --ring: #FF3269;
+  --border: #F5EBDC;
+  --input: #F5EBDC;
+  --ring: #D62300;
 }
 
 @layer base {

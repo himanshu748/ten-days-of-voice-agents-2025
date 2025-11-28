@@ -37,7 +37,7 @@ except ImportError:
 logger = logging.getLogger("grocery-agent")
 
 # Load Catalog
-CATALOG_PATH = Path(__file__).parent / "catalog.json"
+CATALOG_PATH = Path(__file__).parent.parent.parent / "shared-data" / "burgerking_content.json"
 try:
     with open(CATALOG_PATH, "r") as f:
         CATALOG = json.load(f)
@@ -57,33 +57,38 @@ class GroceryAgent(Agent):
 
     def _get_instructions(self) -> str:
         return """
-        You are a **Friendly Grocery Shopping Assistant** for **Zepto AI**.
+        You are a **Burger King Ordering Assistant**.
         
         **YOUR GOAL:**
-        Help users order food and groceries, manage their cart, and place orders.
+        Help users order flame-grilled burgers, fries, and beverages.
         
         **CAPABILITIES:**
-        1.  **Add Items:** Add specific items to the cart (e.g., "Add milk").
-        2.  **Ingredients for Recipes:** Intelligently add multiple items for a dish (e.g., "Ingredients for a sandwich" -> Bread, PB, Jelly).
+        1.  **Add Items:** Add specific items to the cart (e.g., "I want a Whopper").
+        2.  **Recommend Combos:** If a user asks for a burger, suggest adding fries and a drink to make it a meal.
         3.  **Manage Cart:** Remove items, update quantities, or clear the cart.
         4.  **Check Cart:** List what's in the cart.
         5.  **Checkout:** Confirm the order and save it.
 
         **CATALOG:**
-        You have access to a catalog of items (Groceries, Snacks, Prepared Food). 
-        If a user asks for something not in the catalog, politely say you don't carry it but offer a similar item if available.
+        You have access to the Burger King menu, including these **SPECIAL DEALS**:
+        - **Whopper Meal Deal** (₹299): Whopper + Fries + Pepsi.
+        - **Family Feast** (₹599): 2 Whoppers + 2 Fries + 2 Pepsis + Onion Rings.
+        - **Snack Box** (₹199): Crispy Veg + Small Fries + Pepsi.
+
+        If a user asks for something not in the menu (like Big Mac), politely say you serve the best flame-grilled burgers, not that other stuff.
 
         **TONE:**
-        - Friendly, helpful, and efficient.
-        - Confirm actions clearly (e.g., "I've added organic milk to your cart.").
-        - When the user says "that's all" or "place order", summarize the cart and ask for confirmation before placing it.
+        - Bold, confident, and fun ("Have it your way!").
+        - Confirm actions clearly.
+        - Always upsell politely (e.g., "Want to make that a meal with fries and a Pepsi?").
+        - When the user says "that's all" or "place order", summarize the cart and ask for confirmation.
 
         **TOOLS:**
         - `add_to_cart`: Add items.
         - `remove_from_cart`: Remove items.
         - `view_cart`: Get current cart state.
         - `place_order`: Finalize the order.
-        - `get_ingredients_for_dish`: Find items for a recipe.
+        - `recommend_meal_upgrade`: Suggest items to complete a meal.
         """
 
     @function_tool
@@ -92,7 +97,7 @@ class GroceryAgent(Agent):
         ctx: RunContext,
         item_name: Annotated[str, "The name of the item to add"],
         quantity: Annotated[int, "The quantity to add"] = 1,
-        notes: Annotated[str, "Any special notes (e.g., 'large size')"] = "",
+        notes: Annotated[str, "Any special notes (e.g., 'no onions')"] = "",
     ):
         """Add an item to the cart. Tries to match item_name to catalog."""
         logger.info(f"Tool add_to_cart called: {item_name} x{quantity}")
@@ -112,7 +117,7 @@ class GroceryAgent(Agent):
                     break
         
         if not matched_item:
-            return f"I couldn't find '{item_name}' in our catalog. We have: {', '.join(list(self.catalog_lookup.keys())[:5])}..."
+            return f"I couldn't find '{item_name}' in our menu. We have favorites like the Whopper, Chicken Royale, and more."
 
         added_item = self.cart.add_item(
             item_id=matched_item["id"],
@@ -122,7 +127,7 @@ class GroceryAgent(Agent):
             notes=notes
         )
         
-        return f"Added {quantity}x {matched_item['name']} to cart. Total: ${self.cart.get_total():.2f}"
+        return f"Added {quantity}x {matched_item['name']} to cart. Total: ₹{self.cart.get_total():.2f}"
 
     @function_tool
     async def remove_from_cart(
@@ -150,43 +155,25 @@ class GroceryAgent(Agent):
         return str(self.cart)
 
     @function_tool
-    async def get_ingredients_for_dish(
+    async def recommend_meal_upgrade(
         self,
         ctx: RunContext,
-        dish_name: Annotated[str, "The name of the dish (e.g., 'sandwich', 'pasta')"],
+        base_item: Annotated[str, "The item the user just ordered (e.g., 'burger')"],
     ):
-        """Finds ingredients in the catalog for a specific dish and adds them to the cart."""
-        logger.info(f"Tool get_ingredients_for_dish called: {dish_name}")
-        dish = dish_name.lower()
-        added_items = []
-
-        # Simple hardcoded recipe logic (can be expanded)
-        if "sandwich" in dish:
-            # Bread, PB, Jelly
-            for key in ["whole wheat bread", "creamy peanut butter", "strawberry preserves"]:
-                if key in self.catalog_lookup:
-                    item = self.catalog_lookup[key]
-                    self.cart.add_item(item["id"], item["name"], item["price"], 1)
-                    added_items.append(item["name"])
+        """Suggests adding fries and a drink to make it a meal."""
+        logger.info(f"Tool recommend_meal_upgrade called for: {base_item}")
         
-        elif "pasta" in dish or "spaghetti" in dish:
-            # Pasta, Sauce, Cheese
-            for key in ["spaghetti pasta", "marinara sauce", "parmesan cheese"]:
-                if key in self.catalog_lookup:
-                    item = self.catalog_lookup[key]
-                    self.cart.add_item(item["id"], item["name"], item["price"], 1)
-                    added_items.append(item["name"])
-        
-        elif "pizza" in dish:
-             if "pepperoni pizza" in self.catalog_lookup:
-                item = self.catalog_lookup["pepperoni pizza"]
-                self.cart.add_item(item["id"], item["name"], item["price"], 1)
-                added_items.append(item["name"])
+        suggestions = []
+        if "fries" not in str(self.cart).lower():
+             suggestions.append("Fries (Medium)")
+        if "pepsi" not in str(self.cart).lower():
+             suggestions.append("Pepsi (Medium)")
 
-        if added_items:
-            return f"I've added the following ingredients for {dish_name}: {', '.join(added_items)}."
+        if suggestions:
+            # We don't auto-add, just return text for the LLM to say
+            return f"Would you like to make that a meal by adding {', '.join(suggestions)}?"
         else:
-            return f"I'm not sure what ingredients you need for {dish_name}, or we don't carry them. You can ask for specific items."
+            return "You've got a great meal there! Anything else?"
 
     @function_tool
     async def place_order(self, ctx: RunContext):
@@ -198,7 +185,7 @@ class GroceryAgent(Agent):
             order_id = self.order_manager.place_order(self.cart)
             total = self.cart.get_total()
             self.cart.clear() # Clear cart after order
-            return f"Order placed successfully! Order ID is {order_id}. Total amount: ${total:.2f}. Thank you for shopping with Zepto!"
+            return f"Order placed successfully! Order ID is {order_id}. Total amount: ₹{total:.2f}. Thank you for choosing Burger King!"
         except Exception as e:
             logger.error(f"Failed to place order: {e}")
             return "I'm sorry, there was an issue placing your order. Please try again."
@@ -263,7 +250,7 @@ async def entrypoint(ctx: JobContext):
         logger.info("Connected to room")
         
         # Initial greeting
-        await session.say("Welcome to Zepto AI! I can help you order groceries, snacks, or find ingredients for your favorite meals. What can I get for you today?", add_to_chat_ctx=True)
+        await session.say("Welcome to Burger King! Home of the Whopper. What can I get for you today?", add_to_chat_ctx=True)
         logger.info("Initial greeting sent")
 
     except Exception as e:
