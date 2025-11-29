@@ -10,21 +10,20 @@
         --card-foreground: 0 0% 98%;
         --popover: 240 10% 3.9%;
         --popover-foreground: 0 0% 98%;
-        --primary: 48 100% 50%;
-        /* Free Fire Yellow #FFCC00 */
+        --primary: 180 100% 50%;
+        /* Neon Cyan */
         --primary-foreground: 240 5.9% 10%;
-        --secondary: 24 100% 50%;
-        /* Free Fire Orange #FF6600 */
+        --secondary: 240 3.7% 15.9%;
         --secondary-foreground: 0 0% 98%;
         --muted: 240 3.7% 15.9%;
         --muted-foreground: 240 5% 64.9%;
-        --accent: 240 3.7% 15.9%;
+        --accent: 180 100% 50%;
         --accent-foreground: 0 0% 98%;
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
         --border: 240 3.7% 15.9%;
         --input: 240 3.7% 15.9%;
-        --ring: 48 100% 50%;
+        --ring: 180 100% 50%;
         --radius: 0.5rem;
     }
 }
@@ -35,30 +34,34 @@
     }
 
     body {
-        @apply bg-background text-foreground;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #0F0F1A;
-        /* Dark Blue/Black */
-        background-image:
-            radial-gradient(circle at 50% 50%, rgba(255, 102, 0, 0.15) 0%, rgba(15, 15, 26, 0) 70%),
-            linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+        @apply bg-black text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
     }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
+@layer utilities {
+    .animate-glitch {
+        animation: glitch 1s linear infinite;
+    }
 
-::-webkit-scrollbar-track {
-    background: #0a0a0a;
-}
+    @keyframes glitch {
 
-::-webkit-scrollbar-thumb {
-    background: #FFCC00;
-    border-radius: 4px;
-}
+        2%,
+        64% {
+            transform: translate(2px, 0) skew(0deg);
+        }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #FFAA00;
+        4%,
+        60% {
+            transform: translate(-2px, 0) skew(0deg);
+        }
+
+        62% {
+            transform: translate(0, 0) skew(5deg);
+        }
+    }
+
+    .text-glow {
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.5);
+    }
 }

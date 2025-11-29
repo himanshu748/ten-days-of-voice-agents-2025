@@ -1,76 +1,31 @@
 {
-    "weapons": [
+    "clues": [
         {
-            "id": "mp40",
-            "name": "MP40",
-            "type": "SMG",
-            "damage": 25,
-            "fire_rate": 80,
-            "description": "High fire rate, devastating at close range."
+            "id": "encrypted_note",
+            "name": "Encrypted Note",
+            "description": "A crumpled piece of paper with the binary code: 01001000 01000101 01001100 01010000."
         },
         {
-            "id": "awm",
-            "name": "AWM",
-            "type": "Sniper",
-            "damage": 150,
-            "fire_rate": 20,
-            "description": "One shot, one kill. High damage sniper rifle."
+            "id": "uv_flashlight",
+            "name": "UV Flashlight",
+            "description": "Reveals hidden ink on the walls. It shows the number '472'."
         },
         {
-            "id": "groza",
-            "name": "Groza",
-            "type": "AR",
-            "damage": 30,
-            "fire_rate": 60,
-            "description": "Balanced assault rifle, great for mid-range."
-        },
-        {
-            "id": "m1887",
-            "name": "M1887",
-            "type": "Shotgun",
-            "damage": 100,
-            "fire_rate": 30,
-            "description": "Double barrel shotgun. Deadly up close."
+            "id": "rusty_key",
+            "name": "Rusty Key",
+            "description": "An old iron key. It might fit the server cabinet."
         }
     ],
-    "items": [
+    "puzzles": [
         {
-            "id": "gloo_wall",
-            "name": "Gloo Wall",
-            "type": "Utility",
-            "description": "Deployable cover. Essential for survival."
+            "id": "firewall_lock",
+            "name": "Firewall Lock",
+            "description": "The screen asks for a 4-digit PIN. Hint: Look at the wall with the UV light."
         },
         {
-            "id": "medkit",
-            "name": "Medkit",
-            "type": "Healing",
-            "description": "Restores health over time."
-        },
-        {
-            "id": "mushroom",
-            "name": "Mushroom",
-            "type": "Healing",
-            "description": "Consumable found on the ground. Restores EP."
-        }
-    ],
-    "characters": [
-        {
-            "id": "alok",
-            "name": "Alok",
-            "ability": "Drop the Beat",
-            "description": "Creates a 5m aura that increases moving speed and restores HP."
-        },
-        {
-            "id": "kelly",
-            "name": "Kelly",
-            "ability": "Dash",
-            "description": "Increases sprinting speed."
-        },
-        {
-            "id": "chrono",
-            "name": "Chrono",
-            "ability": "Time Turner",
-            "description": "Creates a force field that blocks damages from enemies."
+            "id": "binary_riddle",
+            "name": "Binary Riddle",
+            "description": "Decipher the note to find the password."
         }
     ]
 }

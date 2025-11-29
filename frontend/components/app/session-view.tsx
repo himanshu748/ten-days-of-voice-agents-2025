@@ -19,7 +19,7 @@ import { useDebugMode } from '@/hooks/useDebug';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '../livekit/scroll-area/scroll-area';
 import { Button } from '@/components/livekit/button';
-import { ArrowClockwise, Crosshair, Trophy, Fire } from '@phosphor-icons/react/dist/ssr';
+import { ArrowClockwise, Eye, LockKey } from '@phosphor-icons/react/dist/ssr';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -131,35 +131,35 @@ export const SessionView = ({
   };
 
   return (
-    <section className="relative z-10 h-full w-full overflow-hidden bg-[#0F0F1A] text-[#FFCC00] font-sans" {...props}>
-      {/* Energetic Background */}
+    <section className="relative z-10 h-full w-full overflow-hidden bg-black text-cyan-500 font-mono" {...props}>
+      {/* Background */}
       <div
-        className="absolute inset-0 opacity-20 pointer-events-none"
+        className="absolute inset-0 opacity-50 pointer-events-none"
         style={{
-          backgroundImage: `radial-gradient(circle at 50% 50%, #FF6600 0%, transparent 60%)`,
+          backgroundImage: `url('/escape-room-bg.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       />
 
-      {/* Floating Particles */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="animate-pulse absolute top-[10%] right-[10%] opacity-30"><Fire size={48} className="text-[#FF6600]" /></div>
-      </div>
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/70 pointer-events-none" />
 
       {/* HUD Corners */}
-      <div className="pointer-events-none fixed top-4 left-4 h-16 w-16 border-t-4 border-l-4 border-[#FFCC00] rounded-tl-xl" />
-      <div className="pointer-events-none fixed top-4 right-4 h-16 w-16 border-t-4 border-r-4 border-[#FFCC00] rounded-tr-xl" />
-      <div className="pointer-events-none fixed bottom-4 left-4 h-16 w-16 border-b-4 border-l-4 border-[#FFCC00] rounded-bl-xl" />
-      <div className="pointer-events-none fixed bottom-4 right-4 h-16 w-16 border-b-4 border-r-4 border-[#FFCC00] rounded-br-xl" />
+      <div className="pointer-events-none fixed top-4 left-4 h-16 w-16 border-t-2 border-l-2 border-cyan-500/50" />
+      <div className="pointer-events-none fixed top-4 right-4 h-16 w-16 border-t-2 border-r-2 border-cyan-500/50" />
+      <div className="pointer-events-none fixed bottom-4 left-4 h-16 w-16 border-b-2 border-l-2 border-cyan-500/50" />
+      <div className="pointer-events-none fixed bottom-4 right-4 h-16 w-16 border-b-2 border-r-2 border-cyan-500/50" />
 
       {/* Floating Header */}
       <div className="absolute top-6 left-1/2 z-50 -translate-x-1/2">
-        <div className="flex items-center gap-3 border-2 border-[#FFCC00] bg-black/60 px-8 py-2 shadow-[0_0_20px_rgba(255,204,0,0.4)] backdrop-blur-xl rounded-full transform skew-x-[-10deg]">
-          <div className="flex items-center gap-2 transform skew-x-[10deg]">
-            <Trophy className="h-5 w-5 text-[#FFCC00] animate-bounce" weight="fill" />
-            <span className="text-lg font-black tracking-widest text-white italic uppercase drop-shadow-md">
-              SURVIVAL MODE
+        <div className="flex items-center gap-3 border border-cyan-500/30 bg-black/80 px-6 py-2 shadow-[0_0_15px_rgba(0,255,255,0.2)] backdrop-blur-xl rounded-sm">
+          <div className="flex items-center gap-2">
+            <Eye className="h-4 w-4 text-cyan-500 animate-pulse" />
+            <span className="text-sm font-bold tracking-widest text-cyan-500 uppercase">
+              OVERSEER CONNECTED
             </span>
-            <span className="flex h-3 w-3 rounded-full bg-[#FF0000] animate-pulse shadow-[0_0_8px_#FF0000] ml-2" />
+            <span className="flex h-2 w-2 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_8px_#00FFFF]" />
           </div>
         </div>
       </div>
@@ -201,7 +201,7 @@ export const SessionView = ({
             <PreConnectMessage messages={messages} className="mx-auto" />
           )}
 
-          <div className="relative overflow-hidden border-2 border-[#FFCC00] bg-black/80 p-3 shadow-[0_0_30px_-5px_rgba(255,102,0,0.4)] backdrop-blur-2xl rounded-2xl">
+          <div className="relative overflow-hidden border border-cyan-500/30 bg-black/80 p-2 shadow-[0_0_20px_-5px_rgba(0,255,255,0.2)] backdrop-blur-2xl rounded-sm">
 
             <div className="flex items-center justify-between px-4">
               <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
@@ -209,18 +209,18 @@ export const SessionView = ({
                 variant="ghost"
                 size="icon"
                 onClick={handleRestart}
-                className="text-[#FFCC00] hover:text-white hover:bg-[#FFCC00]/20 rounded-full border border-[#FFCC00]/50 transition-all duration-300"
-                title="Restart Match"
+                className="text-cyan-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-none border border-cyan-500/20"
+                title="Reset Simulation"
               >
-                <ArrowClockwise className="h-6 w-6" weight="bold" />
+                <ArrowClockwise className="h-5 w-5" />
               </Button>
             </div>
 
           </div>
 
           <div className="text-center">
-            <p className="text-[10px] font-bold tracking-[0.5em] text-white/40 uppercase">
-              GARENA // CONNECTED
+            <p className="text-[10px] font-bold tracking-[0.5em] text-cyan-500/30 uppercase">
+              ENIGMA PROTOCOL // ACTIVE
             </p>
           </div>
         </div>

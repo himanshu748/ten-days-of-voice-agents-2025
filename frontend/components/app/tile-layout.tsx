@@ -123,23 +123,23 @@ export function TileLayout({ chatOpen }: TileLayoutProps) {
                     delay: animationDelay,
                   }}
                   className={cn(
-                    'bg-background aspect-square h-[90px] rounded-md border border-transparent transition-[border,drop-shadow]',
-                    chatOpen && 'border-input/50 drop-shadow-lg/10 delay-200'
+                    'bg-black/50 aspect-square h-[90px] rounded-none border border-cyan-500/30 transition-[border,drop-shadow]',
+                    chatOpen && 'border-cyan-500 drop-shadow-[0_0_15px_rgba(0,255,255,0.3)] delay-200'
                   )}
                 >
                   <BarVisualizer
-                    barCount={7}
+                    barCount={12}
                     state={agentState}
-                    options={{ minHeight: 10, maxHeight: 60 }}
+                    options={{ minHeight: 5, maxHeight: 70 }}
                     trackRef={agentAudioTrack}
-                    className={cn('flex h-full items-center justify-center gap-1.5')}
+                    className={cn('flex h-full items-center justify-center gap-1')}
                   >
                     <span
                       className={cn([
-                        'bg-[#FF6600]/30 min-h-4 w-3 rounded-sm',
-                        'origin-bottom transition-all duration-150 ease-out',
-                        'data-[lk-highlighted=true]:bg-[#FFCC00] data-[lk-highlighted=true]:shadow-[0_0_10px_#FFCC00]',
-                        'data-[lk-muted=true]:bg-[#FF6600]/20',
+                        'bg-cyan-900/50 w-1.5 rounded-none',
+                        'origin-bottom transition-all duration-75 ease-linear',
+                        'data-[lk-highlighted=true]:bg-cyan-400 data-[lk-highlighted=true]:shadow-[0_0_10px_#00FFFF]',
+                        'data-[lk-muted=true]:bg-cyan-900/20',
                       ])}
                     />
                   </BarVisualizer>
