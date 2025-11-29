@@ -6,7 +6,6 @@ import { motion } from 'motion/react';
 import { useRoomContext } from '@livekit/components-react';
 import type { AppConfig } from '@/app-config';
 import { ChatTranscript } from '@/components/app/chat-transcript';
-import { DealsCarousel } from '@/components/app/deals-carousel';
 import { ImageViewer } from '@/components/app/image-viewer';
 import { PreConnectMessage } from '@/components/app/preconnect-message';
 import { TileLayout } from '@/components/app/tile-layout';
@@ -19,6 +18,8 @@ import { useConnectionTimeout } from '@/hooks/useConnectionTimout';
 import { useDebugMode } from '@/hooks/useDebug';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '../livekit/scroll-area/scroll-area';
+import { Button } from '@/components/livekit/button';
+import { ArrowClockwise, Crosshair } from '@phosphor-icons/react/dist/ssr';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -125,38 +126,36 @@ export const SessionView = ({
     };
   }, [room]);
 
+  const handleRestart = async () => {
+    window.location.reload();
+  };
+
   return (
-    <section className="relative z-10 h-full w-full overflow-hidden bg-white" {...props}>
-      {/* KFC Background Pattern */}
+    <section className="relative z-10 h-full w-full overflow-hidden bg-black text-green-500 font-mono" {...props}>
+      {/* Tactical Background */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-10 pointer-events-none"
         style={{
-          backgroundImage: `repeating-linear-gradient(45deg, #E4002B 0, #E4002B 1px, transparent 0, transparent 50%)`,
-          backgroundSize: '20px 20px',
+          backgroundImage: `linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
         }}
       />
-      <div className="animate-float pointer-events-none absolute top-[-20%] right-[-10%] h-[800px] w-[800px] rounded-full bg-gradient-to-br from-[#E4002B]/10 to-transparent blur-[120px]" />
-      <div className="animate-float-delayed pointer-events-none absolute bottom-[-20%] left-[-10%] h-[600px] w-[600px] rounded-full bg-gradient-to-tl from-[#E4002B]/10 to-transparent blur-[100px]" />
+
+      {/* HUD Corners */}
+      <div className="pointer-events-none fixed top-4 left-4 h-16 w-16 border-t-2 border-l-2 border-green-500/50" />
+      <div className="pointer-events-none fixed top-4 right-4 h-16 w-16 border-t-2 border-r-2 border-green-500/50" />
+      <div className="pointer-events-none fixed bottom-4 left-4 h-16 w-16 border-b-2 border-l-2 border-green-500/50" />
+      <div className="pointer-events-none fixed bottom-4 right-4 h-16 w-16 border-b-2 border-r-2 border-green-500/50" />
 
       {/* Floating Header */}
       <div className="absolute top-6 left-1/2 z-50 -translate-x-1/2">
-        <div className="flex items-center gap-3 rounded-full border border-black/5 bg-white/80 px-6 py-3 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-[#E4002B]/20 hover:bg-white">
-          <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://upload.wikimedia.org/wikipedia/en/b/bf/KFC_logo.svg"
-              alt="KFC Logo"
-              className="h-full w-full object-contain p-1"
-            />
-          </div>
+        <div className="flex items-center gap-3 border border-green-500/30 bg-black/80 px-6 py-2 shadow-[0_0_15px_rgba(57,255,20,0.2)] backdrop-blur-xl">
           <div className="flex items-center gap-2">
-            <span className="bg-gradient-to-r from-black to-black/80 bg-clip-text text-sm font-bold tracking-wide text-transparent">
-              KFC Voice Assistant
+            <Crosshair className="h-4 w-4 text-green-500 animate-spin-slow" />
+            <span className="text-sm font-bold tracking-widest text-green-500 uppercase">
+              MISSION ACTIVE
             </span>
-            <span className="flex h-1.5 w-1.5 rounded-full bg-[#10B981] shadow-[0_0_8px_#10B981]" />
-            <span className="text-[10px] font-medium tracking-wider text-[#10B981] uppercase">
-              Live
-            </span>
+            <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#39FF14]" />
           </div>
         </div>
       </div>
@@ -198,21 +197,28 @@ export const SessionView = ({
             <PreConnectMessage messages={messages} className="mx-auto" />
           )}
 
-          {/* Deals Carousel */}
-          <div className="mx-auto w-full max-w-sm">
-            <DealsCarousel />
-          </div>
+          <div className="relative overflow-hidden border border-green-500/30 bg-black/80 p-2 shadow-[0_0_20px_-5px_rgba(57,255,20,0.2)] backdrop-blur-2xl">
+            {/* Scanline Effect */}
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,255,0,0.05)_50%)] bg-[length:100%_4px]" />
 
-          <div className="relative overflow-hidden rounded-[2rem] border border-black/5 bg-white/80 p-2 shadow-[0_0_40px_-10px_rgba(228,0,43,0.1)] backdrop-blur-2xl transition-all duration-300 hover:border-[#E4002B]/20 hover:shadow-[0_0_60px_-10px_rgba(228,0,43,0.2)]">
-            {/* Glow Effect */}
-            <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-50" />
+            <div className="flex items-center justify-between px-4">
+              <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleRestart}
+                className="text-green-500 hover:text-green-400 hover:bg-green-500/10 rounded-none border border-green-500/20"
+                title="Abort / Restart Mission"
+              >
+                <ArrowClockwise className="h-5 w-5" />
+              </Button>
+            </div>
 
-            <AgentControlBar controls={controls} onChatOpenChange={setChatOpen} />
           </div>
 
           <div className="text-center">
-            <p className="text-[10px] font-bold tracking-[0.2em] text-black/30 uppercase">
-              Powered by KFC
+            <p className="text-[10px] font-bold tracking-[0.5em] text-green-500/30 uppercase">
+              SECURE CONNECTION // ENCRYPTED
             </p>
           </div>
         </div>

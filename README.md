@@ -1,33 +1,36 @@
-# Burger King Voice Agent - Day 7 Challenge 🍔�
+# Call of Duty: Tactical Commander Voice Agent 🎖️
 
-Welcome to the **Burger King Voice Agent**! This project is a flame-grilled, premium voice assistant designed to bring the "Have it your way" experience to life through an interactive voice interface.
+**"Radio check. Good copy. What are your orders?"**
 
-## About the Project
+Welcome to the **Call of Duty: Tactical Commander** voice agent. This project puts you in the boots of a special forces team leader, with an AI "Command" guiding your mission, reacting to your orders, and narrating the battlefield in real-time.
 
-This agent acts as a **Burger King Ordering Assistant**. It helps users order Whoppers, fries, and deals with a seamless voice-first experience.
+## 🎯 Mission Briefing
+
+This agent acts as **Command**, your tactical operations coordinator. It drops you into high-stakes scenarios (like the Modern Warfare universe) and expects you to lead the squad.
 
 **Key Features:**
-- **Burger King Persona**: Bold, confident, and fun ("Have it your way!").
-- **Smart Cart**: Add items, remove items, and view your cart using natural language.
-- **Deals & Combos**: Recognizes special deals like "Whopper Meal Deal" and "Family Feast".
-- **Premium UI**: A "Flame Grilled" frontend with dynamic animations, rotating deals carousel, and a custom "Flame Button".
+- **Immersive Persona**: A gritty, authoritative military commander who uses tactical jargon ("Oscar Mike", "Tangos", "LZ Hot").
+- **Dynamic Storytelling**: The agent narrates the consequences of your decisions—breach a door, call in an airstrike, or go stealth.
+- **Squad Control**: You command the team (Ghost, Soap, Gaz).
+- **Real-time Interaction**: Powered by **Deepgram Nova-3** (STT) and **Aura** (TTS) for near-instant latency, making the firefight feel real.
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Backend**: Python, LiveKit Agents, Deepgram (Nova-3 STT, Aura TTS), Google Gemini 2.5 Flash (LLM).
-- **Frontend**: Next.js 15 (Turbopack), Tailwind CSS, Framer Motion, LiveKit Components.
-- **Design**: Custom Burger King theme (Red `#D62300`, Orange `#E55F25`, Brown `#502314`, Cream `#F5EBDC`).
+- **Backend**: Python, LiveKit Agents
+- **AI Models**:
+    - **LLM**: Google Gemini 2.5 Flash (for fast, intelligent tactical responses)
+    - **STT**: Deepgram Nova-3 (for accurate voice recognition in "combat")
+    - **TTS**: Deepgram Aura (for that realistic radio-comm voice)
+- **Frontend**: Next.js 15, LiveKit Components (for the visual comms interface)
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Python 3.9+ with `uv`
 - Node.js 18+ with `pnpm`
 - LiveKit Server (local or cloud)
 
 ### 1. Backend Setup
-
 ```bash
 cd backend
 uv sync
@@ -37,7 +40,6 @@ cp .env.example .env.local
 ```
 
 ### 2. Frontend Setup
-
 ```bash
 cd frontend
 pnpm install
@@ -46,10 +48,17 @@ cp .env.example .env.local
 ./restart_frontend.sh
 ```
 
-### 3. Run
+### 3. Deploy to the AO (Area of Operations)
+Open `http://localhost:3000` to establish the comms link.
 
-Open `http://localhost:3000` (or the port shown in your terminal) to start ordering!
+## 🎮 How to Play
+1.  **Connect**: Click "Connect" to start the mission.
+2.  **Listen**: Command will brief you on the situation (e.g., "Approaching target compound").
+3.  **Command**: Give your orders clearly.
+    - *"Breach and clear!"*
+    - *"Go stealth, use suppressors."*
+    - *"Sniper support, take the shot!"*
+4.  **Adapt**: The situation will change based on your choices. Stay sharp.
 
-## License
-
+## 📜 License
 MIT

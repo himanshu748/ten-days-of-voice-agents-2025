@@ -27,175 +27,54 @@ from livekit.agents import (
 from livekit.plugins import silero, google, deepgram, noise_cancellation, murf
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
-try:
-    from src.cart import Cart
-    from src.order_manager import OrderManager
-except ImportError:
-    from cart import Cart
-    from order_manager import OrderManager
+logger = logging.getLogger("cod-agent")
 
-logger = logging.getLogger("grocery-agent")
-
-# Load Catalog
-CATALOG_PATH = Path(__file__).parent.parent.parent / "shared-data" / "kfc_content.json"
-try:
-    with open(CATALOG_PATH, "r") as f:
-        CATALOG = json.load(f)
-    logger.info(f"Loaded catalog with {len(CATALOG)} items")
-except Exception as e:
-    logger.error(f"Failed to load catalog: {e}")
-    CATALOG = []
-
-class GroceryAgent(Agent):
+class CoDAgent(Agent):
     def __init__(self) -> None:
         super().__init__(
             instructions=self._get_instructions(),
         )
-        self.cart = Cart()
-        self.order_manager = OrderManager(orders_dir=str(Path(__file__).parent.parent / "orders"))
-        self.catalog_lookup = {item["name"].lower(): item for item in CATALOG}
 
     def _get_instructions(self) -> str:
         return """
-        You are a **KFC Ordering Assistant**.
-        
-        **YOUR GOAL:**
-        Help users order the world's best fried chicken, Zinger burgers, and buckets.
-        
-        **CAPABILITIES:**
-        1.  **Add Items:** Add specific items to the cart (e.g., "I want a Zinger Burger" or "Chicken Bucket").
-        2.  **Recommend Combos:** If a user asks for a burger, suggest adding fries and a Pepsi.
-        3.  **Manage Cart:** Remove items, update quantities, or clear the cart.
-        4.  **Check Cart:** List what's in the cart.
-        5.  **Checkout:** Confirm the order and save it.
+        You are **Command**, the tactical operations coordinator for a high-stakes special forces mission.
 
-        **CATALOG:**
-        You have access to the KFC menu, including these **SPECIAL DEALS**:
-        - **Ultimate Savings Bucket** (₹699): 4pc Hot & Crispy, 6 Hot Wings, 2 Dips, Pepsi.
-        - **Wednesday Bucket** (₹599): 10pc Hot & Crispy Chicken (Special Offer).
-        - **Super Snacker Deal** (₹399): 2 Zinger Burgers + Medium Fries.
+        **THE UNIVERSE:**
+        - **Call of Duty: Modern Warfare** setting.
+        - Gritty, realistic, high-tech military operations.
+        - Enemies: Ultranationalists, rogue cartels, shadow organizations.
 
-        If a user asks for something not in the menu (like Whopper or Big Mac), politely say you serve the best **Finger Lickin' Good** chicken, not that other stuff.
+        **YOUR ROLE:**
+        1.  **Brief the Mission:** Start by dropping the player into a hot zone. Give them an objective (e.g., "Secure the HVI", "Defuse the bomb", "Extract the hostage").
+        2.  **Tactical Narration:** Describe the battlefield with military precision. Use terms like "Tangos", "LZ", "Oscar Mike", "Click", "Suppressing fire".
+        3.  **Drive the Action:** The situation is volatile. If the player hesitates, things go wrong. Keep the pressure on.
+        4.  **Prompt for Action:** End with a tactical decision point (e.g., "Do you breach the door or flank through the window?", "Orders, Captain?").
 
-        **TONE:**
-        - Friendly, warm, and appetizing ("It's Finger Lickin' Good!").
-        - Confirm actions clearly.
-        - Always upsell politely (e.g., "Want to add some Hot Wings or a Choco Mud Pie to that?").
-        - When the user says "that's all" or "place order", summarize the cart and ask for confirmation.
+        **GAMEPLAY RULES:**
+        - You are the eyes and ears.
+        - Keep descriptions punchy and intense.
+        - If the player fails a critical action, describe the consequences (KIA, mission failed).
+        - You control the squadmates (Ghost, Soap, Gaz) if present.
 
-        **TOOLS:**
-        - `add_to_cart`: Add items.
-        - `remove_from_cart`: Remove items.
-        - `view_cart`: Get current cart state.
-        - `place_order`: Finalize the order.
-        - `recommend_meal_upgrade`: Suggest items to complete a meal.
+        **STARTING SCENE:**
+        "Radio check. Good copy. Listen up. We are approaching the target compound in Verdansk. Intel says the HVI is on the second floor. You're on the chopper, 30 seconds out. The LZ is hot. Prepare for fast rope insertion. What are your orders?"
+
+        **IMPORTANT:**
+        - Stay in character as a hardened military commander.
+        - Be authoritative but respectful to the player (the team leader).
+        - NO fantasy elements. This is modern combat.
         """
 
     @function_tool
-    async def add_to_cart(
-        self,
-        ctx: RunContext,
-        item_name: Annotated[str, "The name of the item to add"],
-        quantity: Annotated[int, "The quantity to add"] = 1,
-        notes: Annotated[str, "Any special notes (e.g., 'no onions')"] = "",
-    ):
-        """Add an item to the cart. Tries to match item_name to catalog."""
-        logger.info(f"Tool add_to_cart called: {item_name} x{quantity}")
-        
-        # Simple fuzzy match or direct lookup
-        item_key = item_name.lower()
-        matched_item = None
-        
-        # Exact match
-        if item_key in self.catalog_lookup:
-            matched_item = self.catalog_lookup[item_key]
-        else:
-            # Partial match
-            for name, item in self.catalog_lookup.items():
-                if item_key in name or name in item_key:
-                    matched_item = item
-                    break
-        
-        if not matched_item:
-            return f"I couldn't find '{item_name}' in our menu. We have favorites like the Whopper, Chicken Royale, and more."
-
-        added_item = self.cart.add_item(
-            item_id=matched_item["id"],
-            name=matched_item["name"],
-            price=matched_item["price"],
-            quantity=quantity,
-            notes=notes
-        )
-        
-        return f"Added {quantity}x {matched_item['name']} to cart. Total: ₹{self.cart.get_total():.2f}"
-
-    @function_tool
-    async def remove_from_cart(
-        self,
-        ctx: RunContext,
-        item_name: Annotated[str, "The name of the item to remove"],
-    ):
-        """Remove an item from the cart."""
-        # Find item in cart by name
-        item_id_to_remove = None
-        for item in self.cart.items.values():
-            if item_name.lower() in item.name.lower():
-                item_id_to_remove = item.id
-                break
-        
-        if item_id_to_remove:
-            removed = self.cart.remove_item(item_id_to_remove)
-            return f"Removed {removed.name} from your cart."
-        else:
-            return f"I couldn't find '{item_name}' in your cart."
-
-    @function_tool
-    async def view_cart(self, ctx: RunContext):
-        """Get the current status of the cart."""
-        return str(self.cart)
-
-    @function_tool
-    async def recommend_meal_upgrade(
-        self,
-        ctx: RunContext,
-        base_item: Annotated[str, "The item the user just ordered (e.g., 'burger')"],
-    ):
-        """Suggests adding fries and a drink to make it a meal."""
-        logger.info(f"Tool recommend_meal_upgrade called for: {base_item}")
-        
-        suggestions = []
-        if "fries" not in str(self.cart).lower():
-             suggestions.append("Fries (Medium)")
-        if "pepsi" not in str(self.cart).lower():
-             suggestions.append("Pepsi (Medium)")
-
-        if suggestions:
-            # We don't auto-add, just return text for the LLM to say
-            return f"Would you like to make that a meal by adding {', '.join(suggestions)}?"
-        else:
-            return "You've got a great meal there! Anything else?"
-
-    @function_tool
-    async def place_order(self, ctx: RunContext):
-        """Finalize the order and save it."""
-        if not self.cart.items:
-            return "Your cart is empty. I can't place an empty order."
-        
-        try:
-            order_id = self.order_manager.place_order(self.cart)
-            total = self.cart.get_total()
-            self.cart.clear() # Clear cart after order
-            return f"Order placed successfully! Order ID is {order_id}. Total amount: ₹{total:.2f}. Thank you for choosing KFC! Enjoy your meal!"
-        except Exception as e:
-            logger.error(f"Failed to place order: {e}")
-            return "I'm sorry, there was an issue placing your order. Please try again."
+    async def restart_mission(self, ctx: RunContext):
+        """Restarts the mission from the beginning."""
+        return "Copy that. Aborting current run. Resetting timeline. Stand by for redeployment... (Mission Reset)"
 
 def prewarm(proc: JobProcess):
     try:
         logger.info("Starting prewarm...")
         proc.userdata["vad"] = silero.VAD.load()
         proc.userdata["stt"] = deepgram.STT(model="nova-3")
-        # proc.userdata["turn_detection"] = MultilingualModel()
         
         if not os.getenv("DEEPGRAM_API_KEY"):
             logger.error("DEEPGRAM_API_KEY is missing")
@@ -212,12 +91,12 @@ async def entrypoint(ctx: JobContext):
         logger.info("Entrypoint started")
         ctx.log_context_fields = {"room": ctx.room.name}
         
-        agent = GroceryAgent()
+        agent = CoDAgent()
         
         session = AgentSession(
             stt=ctx.proc.userdata.get("stt") or deepgram.STT(model="nova-3"),
             llm=google.LLM(model="gemini-2.5-flash"),
-            tts=deepgram.TTS(model="aura-helios-en"), 
+            tts=deepgram.TTS(model="aura-orion-en"), # Male, authoritative voice if possible
             turn_detection=ctx.proc.userdata.get("turn_detection") or MultilingualModel(),
             vad=ctx.proc.userdata["vad"],
             preemptive_generation=True,
@@ -249,8 +128,8 @@ async def entrypoint(ctx: JobContext):
         await ctx.connect()
         logger.info("Connected to room")
         
-        # Initial greeting
-        await session.say("Welcome to KFC! It's Finger Lickin' Good. What can I get for you today?", add_to_chat_ctx=True)
+        # Initial greeting / Scene setter
+        await session.say("Radio check. Good copy. We are approaching the target compound. 30 seconds to LZ. Lock and load. What are your orders?", add_to_chat_ctx=True)
         logger.info("Initial greeting sent")
 
     except Exception as e:
@@ -262,10 +141,9 @@ if __name__ == "__main__":
         WorkerOptions(
             entrypoint_fnc=entrypoint, 
             prewarm_fnc=prewarm,
-            agent_name="freshmarket-agent",
+            agent_name="cod-agent",
             ws_url=os.getenv("LIVEKIT_URL"),
             api_key=os.getenv("LIVEKIT_API_KEY"),
             api_secret=os.getenv("LIVEKIT_API_SECRET"),
         )
     )
-

@@ -20,9 +20,9 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'KFC',
-  pageTitle: 'KFC Voice Order',
-  pageDescription: "Order your favorite fried chicken with your voice. Finger Lickin' Good.",
+  companyName: 'Call of Duty',
+  pageTitle: 'Call of Duty: Voice Ops',
+  pageDescription: "Tactical Voice Operations. Mission Critical.",
 
   supportsChatInput: true,
   supportsVideoInput: false,
@@ -30,12 +30,12 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   isPreConnectBufferEnabled: true,
 
   logo: '/logo.svg', // We'll keep the file but ignore it visually if we use text/emoji
-  accent: '#F40027', // KFC Red
+  accent: '#39FF14', // Neon Green
   logoDark: '/logo.svg',
-  accentDark: '#F40027', // KFC Red
-  startButtonText: 'Start Ordering',
+  accentDark: '#39FF14', // Neon Green
+  startButtonText: 'DEPLOY',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,
-  agentName: 'freshmarket-agent',
+  agentName: 'cod-agent',
 };
