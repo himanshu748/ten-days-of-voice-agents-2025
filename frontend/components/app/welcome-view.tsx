@@ -1,11 +1,10 @@
 import { motion } from 'motion/react';
 import {
-  Target,
   Crosshair,
   ShieldChevron,
-  Radio,
-  Skull,
-  MapTrifold,
+  Lightning,
+  Trophy,
+  Fire,
   CaretRight,
 } from '@phosphor-icons/react/dist/ssr';
 
@@ -15,25 +14,20 @@ interface WelcomeViewProps {
 
 export function WelcomeView({ onStart }: WelcomeViewProps) {
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-black font-mono text-green-500 selection:bg-green-500/30">
-      {/* Tactical Grid Background */}
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#0F0F1A] font-sans text-white selection:bg-[#FFCC00]/30">
+      {/* Energetic Background */}
       <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
+        className="absolute inset-0 opacity-20 pointer-events-none"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px)`,
-          backgroundSize: '40px 40px'
+          backgroundImage: `radial-gradient(circle at 50% 50%, #FF6600 0%, transparent 60%)`,
         }}
       />
 
-      {/* Scanlines */}
-      <div className="pointer-events-none fixed inset-0 z-50 bg-[url('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbm95eGZqY3J5eGZqY3J5eGZqY3J5eGZqY3J5eGZqY3J5eGZqY3J5eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKSjRrfIPjeiVyM/giphy.gif')] opacity-[0.02] bg-cover" />
-
-      {/* Floating Tactical Icons */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden opacity-30">
-        <div className="animate-pulse absolute top-[10%] left-[10%]"><Crosshair size={64} /></div>
-        <div className="animate-pulse absolute top-[20%] right-[15%] delay-700"><Target size={48} /></div>
-        <div className="animate-pulse absolute bottom-[15%] left-[20%] delay-300"><Radio size={56} /></div>
-        <div className="animate-pulse absolute right-[10%] bottom-[25%] delay-500"><MapTrifold size={64} /></div>
+      {/* Floating Particles/Sparks */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="animate-bounce absolute top-[15%] left-[20%] opacity-50"><Fire size={32} className="text-[#FF6600]" /></div>
+        <div className="animate-pulse absolute top-[30%] right-[10%] opacity-50"><Lightning size={48} className="text-[#FFCC00]" /></div>
+        <div className="animate-bounce absolute bottom-[20%] left-[10%] delay-300 opacity-50"><Trophy size={40} className="text-[#FFCC00]" /></div>
       </div>
 
       <div className="relative z-10 flex flex-grow flex-col items-center justify-center px-6 py-20 text-center">
@@ -41,19 +35,17 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: 'circOut' }}
+          transition={{ duration: 0.5, ease: 'backOut' }}
           className="mb-16 flex flex-col items-center"
         >
-          {/* Logo Removed */}
-
-          <h2 className="mb-2 text-2xl font-bold tracking-[0.5em] text-white uppercase md:text-3xl">
-            Voice Ops
+          <h2 className="mb-2 text-4xl font-black italic tracking-tighter text-[#FFCC00] uppercase md:text-6xl drop-shadow-[0_0_15px_rgba(255,204,0,0.5)]">
+            FREE FIRE <span className="text-white">INDIA</span>
           </h2>
 
-          <div className="mb-12 flex items-center gap-2 text-sm font-bold tracking-widest text-green-500/80">
-            <span className="animate-pulse">●</span> SYSTEM ONLINE
-            <span className="mx-2">|</span>
-            <span>SECURE CHANNEL</span>
+          <div className="mb-12 flex items-center gap-2 text-lg font-bold tracking-widest text-white/90">
+            <span className="text-[#FF6600]">BOOYAH!</span>
+            <span className="mx-2 text-white/30">|</span>
+            <span>SURVIVORS READY</span>
           </div>
 
           {/* CTA Button */}
@@ -64,55 +56,93 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
           >
             <button
               onClick={onStart}
-              className="group relative inline-flex items-center justify-center gap-3 overflow-hidden border-2 border-green-500 bg-green-500/10 px-12 py-4 text-xl font-bold tracking-widest text-green-500 transition-all duration-200 hover:bg-green-500 hover:text-black hover:shadow-[0_0_30px_rgba(57,255,20,0.6)]"
+              className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full border-2 border-[#FFCC00] bg-[#FFCC00] px-12 py-4 text-xl font-black tracking-wider text-black transition-all duration-200 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,204,0,0.6)]"
             >
               <span className="relative z-10 flex items-center gap-2">
-                DEPLOY <CaretRight weight="bold" />
+                BATTLE IN STYLE <CaretRight weight="bold" />
               </span>
-              {/* Glitch effect overlay */}
-              <div className="absolute inset-0 -translate-x-full bg-white/20 skew-x-12 transition-transform duration-500 group-hover:translate-x-full" />
             </button>
           </motion.div>
         </motion.div>
 
-        {/* Mission Parameters */}
+        {/* Squad & Offers Section */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5, duration: 0.8 }}
-          className="grid w-full max-w-4xl grid-cols-1 gap-4 md:grid-cols-3"
+          className="mt-16 grid w-full max-w-6xl grid-cols-1 gap-8 md:grid-cols-2"
+        >
+          {/* Squad Section */}
+          <div className="relative flex flex-col items-center rounded-2xl border border-[#FFCC00]/20 bg-black/40 p-6 backdrop-blur-md">
+            <h3 className="mb-6 text-2xl font-black italic text-white uppercase tracking-widest">
+              <span className="text-[#FFCC00]">ELITE</span> SQUAD
+            </h3>
+            <div className="flex gap-4">
+              <div className="group relative h-64 w-48 overflow-hidden rounded-xl border-2 border-white/10 transition-all hover:border-[#FFCC00] hover:scale-105">
+                <img src="/ff-character-alok.png" alt="Alok" className="h-full w-full object-cover" />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 text-center">
+                  <span className="font-bold text-[#FFCC00]">ALOK</span>
+                </div>
+              </div>
+              <div className="group relative h-64 w-48 overflow-hidden rounded-xl border-2 border-white/10 transition-all hover:border-[#FF6600] hover:scale-105">
+                <img src="/ff-character-kelly.png" alt="Kelly" className="h-full w-full object-cover" />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 text-center">
+                  <span className="font-bold text-[#FF6600]">KELLY</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Events Section */}
+          <div className="relative flex flex-col items-center rounded-2xl border border-[#FF6600]/20 bg-black/40 p-6 backdrop-blur-md">
+            <h3 className="mb-6 text-2xl font-black italic text-white uppercase tracking-widest">
+              <span className="text-[#FF6600]">LIVE</span> EVENTS
+            </h3>
+            <div className="group relative w-full overflow-hidden rounded-xl border-2 border-white/10 transition-all hover:border-[#FFCC00] hover:shadow-[0_0_30px_rgba(255,204,0,0.3)]">
+              <img src="/ff-offer-poster.png" alt="Special Airdrop" className="h-64 w-full object-cover" />
+              <div className="absolute top-2 right-2 rounded-md bg-[#FF0000] px-3 py-1 font-bold text-white shadow-lg animate-pulse">
+                LIMITED TIME
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Game Features */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.7, duration: 0.8 }}
+          className="mt-12 grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-3"
         >
           {[
             {
-              icon: Skull,
-              title: 'HOSTILE FORCES',
-              desc: 'Engage enemy combatants in real-time scenarios.',
+              icon: Crosshair,
+              title: 'BATTLE ROYALE',
+              desc: 'Survive the shrinking zone.',
+              color: 'text-[#FFCC00]',
             },
             {
               icon: ShieldChevron,
-              title: 'TACTICAL OPS',
-              desc: 'Execute high-stakes missions with precision.',
+              title: 'SQUAD UP',
+              desc: 'Lead your team to victory.',
+              color: 'text-[#FF6600]',
             },
             {
-              icon: Radio,
-              title: 'COMMS CHECK',
-              desc: 'Direct communication with Command HQ.',
+              icon: Trophy,
+              title: 'GET BOOYAH',
+              desc: 'Be the last survivor standing.',
+              color: 'text-[#FFCC00]',
             },
           ].map((feature, idx) => (
             <div
               key={idx}
-              className="group relative flex flex-col items-center border border-green-500/20 bg-black/50 p-6 backdrop-blur-sm transition-all hover:border-green-500/50 hover:bg-green-500/5"
+              className="group relative flex flex-col items-center rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all hover:border-[#FFCC00]/50 hover:bg-white/10"
             >
-              {/* Corner Markers */}
-              <div className="absolute top-0 left-0 h-2 w-2 border-t-2 border-l-2 border-green-500" />
-              <div className="absolute top-0 right-0 h-2 w-2 border-t-2 border-r-2 border-green-500" />
-              <div className="absolute bottom-0 left-0 h-2 w-2 border-b-2 border-l-2 border-green-500" />
-              <div className="absolute bottom-0 right-0 h-2 w-2 border-b-2 border-r-2 border-green-500" />
-
-              <feature.icon className="mb-4 h-8 w-8 text-green-500" />
-              <h3 className="mb-2 text-lg font-bold text-white uppercase">{feature.title}</h3>
-              <p className="text-xs text-green-500/70">{feature.desc}</p>
+              <feature.icon className={`mb-4 h-10 w-10 ${feature.color}`} weight="duotone" />
+              <h3 className="mb-2 text-lg font-black italic text-white uppercase">{feature.title}</h3>
+              <p className="text-sm text-white/70">{feature.desc}</p>
             </div>
           ))}
         </motion.div>
@@ -120,9 +150,9 @@ export function WelcomeView({ onStart }: WelcomeViewProps) {
 
       {/* Footer */}
       <div className="relative z-10 mt-auto mb-8 flex flex-col items-center gap-2">
-        <div className="h-px w-24 bg-green-500/30" />
-        <span className="text-[10px] font-bold tracking-[0.3em] text-green-500/50 uppercase">
-          CLASSIFIED // EYES ONLY
+        <div className="h-1 w-24 rounded-full bg-gradient-to-r from-[#FFCC00] to-[#FF6600]" />
+        <span className="text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
+          GARENA INTERNATIONAL
         </span>
       </div>
     </div>

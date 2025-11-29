@@ -1,228 +1,76 @@
-[
-    {
-        "id": "g_milk_1",
-        "name": "Organic Whole Milk",
-        "category": "Groceries",
-        "price": 5.99,
-        "unit": "gallon",
-        "tags": [
-            "dairy",
-            "organic",
-            "breakfast"
-        ]
-    },
-    {
-        "id": "g_eggs_1",
-        "name": "Free Range Eggs",
-        "category": "Groceries",
-        "price": 4.50,
-        "unit": "dozen",
-        "tags": [
-            "dairy",
-            "breakfast",
-            "protein"
-        ]
-    },
-    {
-        "id": "g_bread_1",
-        "name": "Whole Wheat Bread",
-        "category": "Groceries",
-        "price": 3.25,
-        "unit": "loaf",
-        "tags": [
-            "bakery",
-            "grains",
-            "sandwich"
-        ]
-    },
-    {
-        "id": "g_pb_1",
-        "name": "Creamy Peanut Butter",
-        "category": "Groceries",
-        "price": 4.99,
-        "unit": "jar",
-        "tags": [
-            "pantry",
-            "sandwich",
-            "protein"
-        ]
-    },
-    {
-        "id": "g_jelly_1",
-        "name": "Strawberry Preserves",
-        "category": "Groceries",
-        "price": 3.75,
-        "unit": "jar",
-        "tags": [
-            "pantry",
-            "sandwich",
-            "sweet"
-        ]
-    },
-    {
-        "id": "g_pasta_1",
-        "name": "Spaghetti Pasta",
-        "category": "Groceries",
-        "price": 1.99,
-        "unit": "box",
-        "tags": [
-            "pantry",
-            "dinner",
-            "italian"
-        ]
-    },
-    {
-        "id": "g_sauce_1",
-        "name": "Marinara Sauce",
-        "category": "Groceries",
-        "price": 3.50,
-        "unit": "jar",
-        "tags": [
-            "pantry",
-            "dinner",
-            "italian"
-        ]
-    },
-    {
-        "id": "g_cheese_1",
-        "name": "Parmesan Cheese",
-        "category": "Groceries",
-        "price": 5.50,
-        "unit": "wedge",
-        "tags": [
-            "dairy",
-            "dinner",
-            "italian"
-        ]
-    },
-    {
-        "id": "s_chips_1",
-        "name": "Sea Salt Potato Chips",
-        "category": "Snacks",
-        "price": 2.99,
-        "unit": "bag",
-        "tags": [
-            "snack",
-            "salty"
-        ]
-    },
-    {
-        "id": "s_cookies_1",
-        "name": "Chocolate Chip Cookies",
-        "category": "Snacks",
-        "price": 4.50,
-        "unit": "box",
-        "tags": [
-            "snack",
-            "sweet",
-            "dessert"
-        ]
-    },
-    {
-        "id": "p_pizza_1",
-        "name": "Pepperoni Pizza",
-        "category": "Prepared Food",
-        "price": 12.99,
-        "unit": "whole",
-        "tags": [
-            "dinner",
-            "hot",
-            "italian"
-        ]
-    },
-    {
-        "id": "p_salad_1",
-        "name": "Caesar Salad",
-        "category": "Prepared Food",
-        "price": 8.99,
-        "unit": "bowl",
-        "tags": [
-            "lunch",
-            "healthy",
-            "fresh"
-        ]
-    },
-    {
-        "id": "p_sandwich_1",
-        "name": "Turkey Club Sandwich",
-        "category": "Prepared Food",
-        "price": 9.50,
-        "unit": "whole",
-        "tags": [
-            "lunch",
-            "fresh"
-        ]
-    },
-    {
-        "id": "g_banana_1",
-        "name": "Bananas",
-        "category": "Groceries",
-        "price": 0.69,
-        "unit": "lb",
-        "tags": [
-            "produce",
-            "fruit",
-            "healthy"
-        ]
-    },
-    {
-        "id": "g_apple_1",
-        "name": "Honeycrisp Apples",
-        "category": "Groceries",
-        "price": 2.49,
-        "unit": "lb",
-        "tags": [
-            "produce",
-            "fruit",
-            "healthy"
-        ]
-    },
-    {
-        "id": "kfc_zinger_1",
-        "name": "Zinger Burger",
-        "category": "KFC Specials",
-        "price": 5.99,
-        "unit": "each",
-        "tags": [
-            "fast food",
-            "chicken",
-            "spicy"
-        ]
-    },
-    {
-        "id": "kfc_bucket_1",
-        "name": "Family Bucket (12pc)",
-        "category": "KFC Specials",
-        "price": 19.99,
-        "unit": "bucket",
-        "tags": [
-            "fast food",
-            "chicken",
-            "family"
-        ]
-    },
-    {
-        "id": "kfc_popcorn_1",
-        "name": "Popcorn Chicken",
-        "category": "KFC Specials",
-        "price": 4.99,
-        "unit": "box",
-        "tags": [
-            "fast food",
-            "chicken",
-            "snack"
-        ]
-    },
-    {
-        "id": "kfc_wings_1",
-        "name": "Hot Wings (6pc)",
-        "category": "KFC Specials",
-        "price": 5.49,
-        "unit": "box",
-        "tags": [
-            "fast food",
-            "chicken",
-            "spicy"
-        ]
-    }
-]
+{
+    "weapons": [
+        {
+            "id": "mp40",
+            "name": "MP40",
+            "type": "SMG",
+            "damage": 25,
+            "fire_rate": 80,
+            "description": "High fire rate, devastating at close range."
+        },
+        {
+            "id": "awm",
+            "name": "AWM",
+            "type": "Sniper",
+            "damage": 150,
+            "fire_rate": 20,
+            "description": "One shot, one kill. High damage sniper rifle."
+        },
+        {
+            "id": "groza",
+            "name": "Groza",
+            "type": "AR",
+            "damage": 30,
+            "fire_rate": 60,
+            "description": "Balanced assault rifle, great for mid-range."
+        },
+        {
+            "id": "m1887",
+            "name": "M1887",
+            "type": "Shotgun",
+            "damage": 100,
+            "fire_rate": 30,
+            "description": "Double barrel shotgun. Deadly up close."
+        }
+    ],
+    "items": [
+        {
+            "id": "gloo_wall",
+            "name": "Gloo Wall",
+            "type": "Utility",
+            "description": "Deployable cover. Essential for survival."
+        },
+        {
+            "id": "medkit",
+            "name": "Medkit",
+            "type": "Healing",
+            "description": "Restores health over time."
+        },
+        {
+            "id": "mushroom",
+            "name": "Mushroom",
+            "type": "Healing",
+            "description": "Consumable found on the ground. Restores EP."
+        }
+    ],
+    "characters": [
+        {
+            "id": "alok",
+            "name": "Alok",
+            "ability": "Drop the Beat",
+            "description": "Creates a 5m aura that increases moving speed and restores HP."
+        },
+        {
+            "id": "kelly",
+            "name": "Kelly",
+            "ability": "Dash",
+            "description": "Increases sprinting speed."
+        },
+        {
+            "id": "chrono",
+            "name": "Chrono",
+            "ability": "Time Turner",
+            "description": "Creates a force field that blocks damages from enemies."
+        }
+    ]
+}

@@ -128,17 +128,18 @@ export function TileLayout({ chatOpen }: TileLayoutProps) {
                   )}
                 >
                   <BarVisualizer
-                    barCount={5}
+                    barCount={7}
                     state={agentState}
-                    options={{ minHeight: 5 }}
+                    options={{ minHeight: 10, maxHeight: 60 }}
                     trackRef={agentAudioTrack}
-                    className={cn('flex h-full items-center justify-center gap-1')}
+                    className={cn('flex h-full items-center justify-center gap-1.5')}
                   >
                     <span
                       className={cn([
-                        'bg-muted min-h-2.5 w-2.5 rounded-full',
-                        'origin-center transition-colors duration-250 ease-linear',
-                        'data-[lk-highlighted=true]:bg-primary data-[lk-muted=true]:bg-muted',
+                        'bg-[#FF6600]/30 min-h-4 w-3 rounded-sm',
+                        'origin-bottom transition-all duration-150 ease-out',
+                        'data-[lk-highlighted=true]:bg-[#FFCC00] data-[lk-highlighted=true]:shadow-[0_0_10px_#FFCC00]',
+                        'data-[lk-muted=true]:bg-[#FF6600]/20',
                       ])}
                     />
                   </BarVisualizer>

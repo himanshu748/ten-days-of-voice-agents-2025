@@ -4,28 +4,28 @@
 
 @layer base {
     :root {
-        --background: 120 10% 3.9%;
+        --background: 240 10% 3.9%;
         --foreground: 0 0% 98%;
-        --card: 120 10% 3.9%;
+        --card: 240 10% 3.9%;
         --card-foreground: 0 0% 98%;
-        --popover: 120 10% 3.9%;
+        --popover: 240 10% 3.9%;
         --popover-foreground: 0 0% 98%;
-        --primary: 111 100% 54%;
-        /* Neon Green */
-        --primary-foreground: 120 5.9% 10%;
-        --secondary: 120 3.7% 15.9%;
+        --primary: 48 100% 50%;
+        /* Free Fire Yellow #FFCC00 */
+        --primary-foreground: 240 5.9% 10%;
+        --secondary: 24 100% 50%;
+        /* Free Fire Orange #FF6600 */
         --secondary-foreground: 0 0% 98%;
-        --muted: 120 3.7% 15.9%;
-        --muted-foreground: 120 5% 64.9%;
-        --accent: 120 3.7% 15.9%;
+        --muted: 240 3.7% 15.9%;
+        --muted-foreground: 240 5% 64.9%;
+        --accent: 240 3.7% 15.9%;
         --accent-foreground: 0 0% 98%;
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
-        --border: 120 3.7% 15.9%;
-        --input: 120 3.7% 15.9%;
-        --ring: 111 100% 54%;
-        --radius: 0rem;
-        /* Sharp edges for tactical look */
+        --border: 240 3.7% 15.9%;
+        --input: 240 3.7% 15.9%;
+        --ring: 48 100% 50%;
+        --radius: 0.5rem;
     }
 }
 
@@ -36,17 +36,16 @@
 
     body {
         @apply bg-background text-foreground;
-        font-family: 'Courier New', Courier, monospace;
-        /* Tactical/Terminal font */
-        background-color: #000000;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #0F0F1A;
+        /* Dark Blue/Black */
         background-image:
-            linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-            linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-        background-size: 100% 2px, 3px 100%;
+            radial-gradient(circle at 50% 50%, rgba(255, 102, 0, 0.15) 0%, rgba(15, 15, 26, 0) 70%),
+            linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
     }
 }
 
-/* Custom Tactical Scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -56,10 +55,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #39FF14;
-    border-radius: 0px;
+    background: #FFCC00;
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #32CD32;
+    background: #FFAA00;
 }
