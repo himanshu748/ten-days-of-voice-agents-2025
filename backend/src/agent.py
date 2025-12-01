@@ -1,6 +1,15 @@
 import logging
-
+from pathlib import Path
 from dotenv import load_dotenv
+import os
+import json
+from datetime import datetime
+from typing import Annotated, Dict, Any, Optional, List
+
+# Load env vars
+env_path = Path(__file__).parent.parent / ".env.local"
+load_dotenv(dotenv_path=env_path)
+
 from livekit.agents import (
     Agent,
     AgentSession,
@@ -11,129 +20,168 @@ from livekit.agents import (
     WorkerOptions,
     cli,
     metrics,
-    tokenize,
-    # function_tool,
-    # RunContext
+    function_tool,
+    RunContext,
+    llm,
+    AutoSubscribe,
 )
-from livekit.plugins import murf, silero, google, deepgram, noise_cancellation
+from livekit.plugins import silero, google, deepgram, noise_cancellation, murf
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
+from .improv_game import ImprovGame
 
-logger = logging.getLogger("agent")
+logger = logging.getLogger("startup-validator")
 
-load_dotenv(".env.local")
-
-
-class Assistant(Agent):
+class StartupValidatorAgent(Agent):
     def __init__(self) -> None:
+        self.game = ImprovGame()
         super().__init__(
-            instructions="""You are a helpful voice AI assistant. The user is interacting with you via voice, even if you perceive the conversation as text.
-            You eagerly assist users with their questions by providing information from your extensive knowledge.
-            Your responses are concise, to the point, and without any complex formatting including emojis, asterisks, or other weird symbols.
-            You are curious, friendly, and have a sense of humor.""",
+            instructions=self._get_instructions(),
         )
 
-    # To add tools, use the @function_tool decorator.
-    # Here's an example that adds a simple weather tool.
-    # You also have to add `from livekit.agents import function_tool, RunContext` to the top of this file
-    # @function_tool
-    # async def lookup_weather(self, context: RunContext, location: str):
-    #     """Use this tool to look up current weather information in the given location.
-    #
-    #     If the location is not supported by the weather service, the tool will indicate this. You must tell the user the location's weather is unavailable.
-    #
-    #     Args:
-    #         location: The location to look up weather information for (e.g. city name)
-    #     """
-    #
-    #     logger.info(f"Looking up weather for {location}")
-    #
-    #     return "sunny with a temperature of 70 degrees."
+    def _get_instructions(self) -> str:
+        return """
+        You are 'The Partner', a brutally honest, high-stakes Venture Capitalist and Startup Validator. You run 'The Gauntlet', a pitch validation session.
+        
+        **PERSONA:**
+        - You are sharp, fast-talking, and business-focused.
+        - You use VC jargon (burn rate, TAM, CAC, LTV, pivot, unicorn, decacorn).
+        - You are skeptical but willing to be convinced.
+        - You roast bad ideas mercilessly but praise true innovation (even if it's absurd).
+        - Your voice should sound professional, authoritative, and slightly impatient.
+        
+        **GAME FLOW:**
+        1.  **Intro:** When the user joins, welcome them to 'The Gauntlet'. Ask for their name and their "pre-seed valuation" (just for fun).
+        2.  **Pitch Rounds (Validation):**
+            - Use the `next_pitch` tool to get a startup idea.
+            - Announce the idea they must pitch.
+            - Tell them to "Sell me this!" or "Pitch it before I lose interest!".
+            - Listen to their pitch.
+            - When they finish, react to it.
+            - Use `validate_pitch` to record your reaction.
+        3.  **Validation Analysis (Reactions):**
+            - Critique the business model, the market size, or the sheer absurdity.
+            - Decide if you're "In" or "Out" for that round.
+            - Example: "The TAM on bottled air is zero, but I like your hustle. I'm out." or "A dating app for ghosts? That's a blue ocean strategy! I'm listening."
+        4.  **Term Sheet (End Game):**
+            - After 3 rounds, summarize their performance.
+            - Decide if you will fund them or pass.
+            - Thank them and close the session.
+            
+        **TOOLS:**
+        - `start_session(founder_name)`: Call this when the user provides their name.
+        - `next_pitch()`: Call this to start a new pitch round.
+        - `validate_pitch(reaction)`: Call this after you have reacted to the user's pitch.
+        - `issue_term_sheet()`: Call this to end the game and summarize.
+        
+        **IMPORTANT:**
+        - If the user says "stop" or "quit", confirm and end the call.
+        - Keep it professional but entertaining.
+        """
+
+    @function_tool
+    async def start_session(self, founder_name: str):
+        """
+        Start the validation session with the founder's name.
+        """
+        self.game.start_game(founder_name)
+        return f"File opened for Founder {founder_name}. Let's see what you've got. Ready for the first pitch?"
+
+    @function_tool
+    async def next_pitch(self):
+        """
+        Get the next startup idea to pitch. Returns None if the session is over.
+        """
+        scenario = self.game.get_next_scenario()
+        if scenario:
+            return f"Here is your startup idea: {scenario}"
+        else:
+            return "Due diligence is complete. Let's look at the numbers."
+
+    @function_tool
+    async def validate_pitch(self, reaction: str):
+        """
+        Record the VC's reaction to the pitch.
+        """
+        self.game.end_round(reaction)
+        return "Pitch validated. Moving to next item."
+
+    @function_tool
+    async def issue_term_sheet(self):
+        """
+        Ends the session and summarizes the results.
+        """
+        summary = self.game.get_game_summary()
+        return f"Session closed. Here is our decision: {summary}. Don't call us, we'll call you."
 
 
 def prewarm(proc: JobProcess):
-    proc.userdata["vad"] = silero.VAD.load()
-
+    try:
+        logger.info("Starting prewarm...")
+        proc.userdata["vad"] = silero.VAD.load()
+        # Deepgram Nova 3
+        proc.userdata["stt"] = deepgram.STT(model="nova-3")
+        # Google Gemini 2.5 Flash
+        proc.userdata["llm"] = google.LLM(model="gemini-2.5-flash")
+        # Murf Falcon
+        proc.userdata["tts"] = murf.TTS(
+            model="FALCON",
+            voice="Matthew", # Or another suitable professional voice
+            style="Promo",
+        )
+        
+        if not os.getenv("DEEPGRAM_API_KEY"):
+            logger.error("DEEPGRAM_API_KEY is missing")
+        if not os.getenv("GOOGLE_API_KEY"):
+            logger.error("GOOGLE_API_KEY is missing")
+        if not os.getenv("MURF_API_KEY"):
+            logger.error("MURF_API_KEY is missing")
+            
+        logger.info("Prewarm completed")
+    except Exception as e:
+        logger.error(f"Prewarm failed: {e}", exc_info=True)
+        raise e
 
 async def entrypoint(ctx: JobContext):
-    # Logging setup
-    # Add any other context you want in all log entries here
-    ctx.log_context_fields = {
-        "room": ctx.room.name,
-    }
+    logger.info("Entrypoint started")
+    ctx.log_context_fields = {"room": ctx.room.name}
 
-    # Set up a voice AI pipeline using OpenAI, Cartesia, AssemblyAI, and the LiveKit turn detector
+    logger.info(f"connecting to room {ctx.room.name}")
+    await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+    
+    # Wait for participant to connect
+    participant = await ctx.wait_for_participant()
+    logger.info(f"starting voice assistant for participant {participant.identity}")
+
+    agent = StartupValidatorAgent()
+    
     session = AgentSession(
-        # Speech-to-text (STT) is your agent's ears, turning the user's speech into text that the LLM can understand
-        # See all available models at https://docs.livekit.io/agents/models/stt/
-        stt=deepgram.STT(model="nova-3"),
-        # A Large Language Model (LLM) is your agent's brain, processing user input and generating a response
-        # See all available models at https://docs.livekit.io/agents/models/llm/
-        llm=google.LLM(
-                model="gemini-2.5-flash",
-            ),
-        # Text-to-speech (TTS) is your agent's voice, turning the LLM's text into speech that the user can hear
-        # See all available models as well as voice selections at https://docs.livekit.io/agents/models/tts/
-        tts=murf.TTS(
-                voice="en-US-matthew", 
-                style="Conversation",
-                tokenizer=tokenize.basic.SentenceTokenizer(min_sentence_len=2),
-                text_pacing=True
-            ),
-        # VAD and turn detection are used to determine when the user is speaking and when the agent should respond
-        # See more at https://docs.livekit.io/agents/build/turns
-        turn_detection=MultilingualModel(),
+        stt=ctx.proc.userdata.get("stt") or deepgram.STT(model="nova-3"),
+        llm=ctx.proc.userdata.get("llm") or google.LLM(model="gemini-2.5-flash"),
+        tts=ctx.proc.userdata.get("tts") or murf.TTS(
+            model="FALCON",
+            voice="Matthew",
+            style="Promo",
+        ),
+        turn_detection=ctx.proc.userdata.get("turn_detection") or MultilingualModel(),
         vad=ctx.proc.userdata["vad"],
-        # allow the LLM to generate a response while waiting for the end of turn
-        # See more at https://docs.livekit.io/agents/build/audio/#preemptive-generation
         preemptive_generation=True,
     )
-
-    # To use a realtime model instead of a voice pipeline, use the following session setup instead.
-    # (Note: This is for the OpenAI Realtime API. For other providers, see https://docs.livekit.io/agents/models/realtime/))
-    # 1. Install livekit-agents[openai]
-    # 2. Set OPENAI_API_KEY in .env.local
-    # 3. Add `from livekit.plugins import openai` to the top of this file
-    # 4. Use the following session setup instead of the version above
-    # session = AgentSession(
-    #     llm=openai.realtime.RealtimeModel(voice="marin")
-    # )
-
-    # Metrics collection, to measure pipeline performance
-    # For more information, see https://docs.livekit.io/agents/build/metrics/
-    usage_collector = metrics.UsageCollector()
-
-    @session.on("metrics_collected")
-    def _on_metrics_collected(ev: MetricsCollectedEvent):
-        metrics.log_metrics(ev.metrics)
-        usage_collector.collect(ev.metrics)
-
-    async def log_usage():
-        summary = usage_collector.get_summary()
-        logger.info(f"Usage: {summary}")
-
-    ctx.add_shutdown_callback(log_usage)
-
-    # # Add a virtual avatar to the session, if desired
-    # # For other providers, see https://docs.livekit.io/agents/models/avatar/
-    # avatar = hedra.AvatarSession(
-    #   avatar_id="...",  # See https://docs.livekit.io/agents/models/avatar/plugins/hedra
-    # )
-    # # Start the avatar and wait for it to join
-    # await avatar.start(session, room=ctx.room)
-
-    # Start the session, which initializes the voice pipeline and warms up the models
+    
     await session.start(
-        agent=Assistant(),
+        agent=agent,
         room=ctx.room,
         room_input_options=RoomInputOptions(
-            # For telephony applications, use `BVCTelephony` for best results
             noise_cancellation=noise_cancellation.BVC(),
         ),
     )
 
-    # Join the room and connect to the user
-    await ctx.connect()
-
+    await session.say("Welcome to The Gauntlet. I'm The Partner. State your name and let's see if you're unicorn material.", allow_interruptions=True)
 
 if __name__ == "__main__":
-    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
+    cli.run_app(
+        WorkerOptions(
+            entrypoint_fnc=entrypoint,
+            prewarm_fnc=prewarm,
+            agent_name="startup-validator",
+        ),
+    )

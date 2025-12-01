@@ -20,22 +20,22 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'LiveKit',
-  pageTitle: 'LiveKit Voice Agent',
-  pageDescription: 'A voice agent built with LiveKit',
+  companyName: 'The Gauntlet',
+  pageTitle: 'The Gauntlet: Startup Validator',
+  pageDescription: 'Pitch your startup to The Partner. Survive 3 rounds of brutal validation.',
 
   supportsChatInput: true,
-  supportsVideoInput: true,
-  supportsScreenShare: true,
+  supportsVideoInput: false,
+  supportsScreenShare: false,
   isPreConnectBufferEnabled: true,
 
-  logo: '/lk-logo.svg',
-  accent: '#002cf2',
+  logo: '/lk-logo.svg', // Keeping default logo for now, or could change if user provided one
+  accent: '#e11d48', // Red for high stakes
   logoDark: '/lk-logo-dark.svg',
-  accentDark: '#1fd5f9',
-  startButtonText: 'Start call',
+  accentDark: '#f43f5e', // Lighter red for dark mode
+  startButtonText: 'Enter The Gauntlet',
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,
-  agentName: undefined,
+  agentName: 'startup-validator',
 };
